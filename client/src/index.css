@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-brand: #00C805;
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+@layer base {
+  :root {
+    /* Robinhood-inspired High Contrast Theme */
+    --background: 0 0% 100%;
+    /* Pure White */
+    --foreground: 0 0% 0%;
+    /* Pure Black */
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+
+    --primary: 122 100% 39%;
+    /* #00C805 Neon Green */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 20% 97%;
+    /* #F5F8FA Very Light Grey */
+    --secondary-foreground: 215 16% 47%;
+    /* #6A727C Slate Grey */
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 122 100% 95%;
+    /* Very light green tint */
+    --accent-foreground: 122 100% 39%;
+
+    --destructive: 0 100% 59%;
+    /* #FF3B30 */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 20% 90%;
+    /* Subtle Border */
+    --input: 210 20% 90%;
+    --ring: 122 100% 39%;
+    /* Green Ring */
+
+    --radius: 1rem;
+    /* Rounded-2xl look (16px) */
+  }
+
+  /* We might want a dark mode later, but for now enforcing the "Day Mode" Robinhood look */
+  .dark {
+    /* Keeping dark mode vars just in case, but mapped to a deep black theme if needed */
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 100%;
+    --primary: 122 100% 39%;
+    --secondary: 0 0% 10%;
+    --border: 0 0% 15%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-[color:var(--secondary)] text-foreground antialiased selection:bg-brand selection:text-white;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+    /* Modern font features */
+  }
+
+  /* Smooth transitions for all extensive UI changes */
+  button,
+  a {
+    @apply transition-all duration-200;
+  }
+}

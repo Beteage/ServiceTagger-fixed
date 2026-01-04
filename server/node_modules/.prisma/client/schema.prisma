@@ -1,0 +1,103 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Tenant {
+  id        String   @id @default(uuid())
+  name      String
+  tier      String   @default("basic")
+  users     User[]
+  customers Customer[]
+  jobs      Job[]
+  pricebookItems PricebookItem[]
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+  role     String 
+  skills   String? // JSON string or comma-separated: "HVAC,Plumbing"
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+  jobs     Job[]
+}
+
+model Customer {
+  id       String @id @default(uuid())
+  name     String
+  address  String
+  phone    String
+  lat      Float?
+  lng      Float?
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+  jobs     Job[]
+  assets   Asset[]
+}
+
+model Asset {
+  id          String    @id @default(uuid())
+  customerId  String
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  type        String    // Furnace, Boiler, AC
+  make        String?
+  model       String?
+  serial      String?
+  installDate DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+model Job {
+  id             String   @id @default(uuid())
+  status         String   @default("Draft")
+  scheduledStart DateTime
+  technicianId   String?
+  technician     User?    @relation(fields: [technicianId], references: [id])
+  customerId     String
+  customer       Customer @relation(fields: [customerId], references: [id])
+  tenantId       String
+  tenant         Tenant   @relation(fields: [tenantId], references: [id])
+  invoices       Invoice[]
+}
+
+model Invoice {
+  id        String   @id @default(uuid())
+  jobId     String
+  job       Job      @relation(fields: [jobId], references: [id])
+  amount    Float
+  status    String   @default("Draft") // Draft, Paid, Void
+  items     InvoiceItem[]
+  createdAt DateTime @default(now())
+}
+
+model PricebookItem {
+  id          String   @id @default(uuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+  name        String
+  description String?
+  price       Float
+  type        String   // service, material, labor
+  category    String?  // HVAC, Plumbing, etc.
+  imageUrl    String?
+  invoiceItems InvoiceItem[]
+  createdAt   DateTime @default(now())
+}
+
+model InvoiceItem {
+  id            String   @id @default(uuid())
+  invoiceId     String
+  invoice       Invoice  @relation(fields: [invoiceId], references: [id])
+  description   String
+  quantity      Float
+  unitPrice     Float
+  total         Float
+  pricebookItemId String?
+  pricebookItem PricebookItem? @relation(fields: [pricebookItemId], references: [id])
+}
