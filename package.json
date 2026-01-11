@@ -8,5 +8,8 @@
     "workspaces": [
         "client",
         "server"
-    ]
+    ],
+    "devDependencies": {
+        "@vercel/node": "^5.5.16"
+    }
 }
