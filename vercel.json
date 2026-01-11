@@ -9,7 +9,7 @@
       }
     },
     {
-      "src": "server/index.js",
+      "src": "server/src/index.ts",
       "use": "@vercel/node"
     }
   ],
