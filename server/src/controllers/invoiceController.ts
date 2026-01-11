@@ -170,8 +170,8 @@ export const createStripeInvoice = async (req: Request, res: Response) => {
                 jobId: job.id,
                 amount: amount,
                 status: 'Sent', // Initial status
-                stripeInvoiceId: invoice.id,
-                stripeHostedUrl: finalizedInvoice.hosted_invoice_url,
+                // stripeInvoiceId: invoice.id,
+                // stripeHostedUrl: finalizedInvoice.hosted_invoice_url,
                 // Note: items are not detailed here in local DB for this flow, could improve later
             }
         });
