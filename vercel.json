@@ -20,11 +20,11 @@
     },
     {
       "src": "/(.*\\..*)",
-      "dest": "/$1"
+      "dest": "/client/dist/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/client/dist/index.html"
     }
   ]
 }
