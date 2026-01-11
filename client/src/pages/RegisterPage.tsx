@@ -18,7 +18,7 @@ const RegisterPage: React.FC = () => {
             // Redirect to login or auto-login
             navigate('/login');
         } catch (err: any) {
-            setError('Registration failed. Try again.');
+            setError(err.response?.data?.message || 'Registration failed. Try again.');
         }
     };
 

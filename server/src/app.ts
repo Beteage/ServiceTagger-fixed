@@ -23,8 +23,14 @@ app.use(cors({
 }));
 
 // Basic Health Check
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date() });
+app.get('/api/health', async (req, res) => {
+    try {
+        await prisma.$queryRaw`SELECT 1`;
+        res.json({ status: 'ok', database: 'connected', timestamp: new Date() });
+    } catch (error) {
+        console.error('Health check failed:', error);
+        res.status(500).json({ status: 'error', database: 'disconnected', error: String(error), timestamp: new Date() });
+    }
 });
 
 // Middleware to inject prisma
