@@ -20,23 +20,23 @@
   "routes": [
     {
       "src": "/api/test-js",
-      "dest": "/api/test_js.js"
+      "dest": "api/test_js.js"
     },
     {
       "src": "/api/test",
-      "dest": "/api/test.ts"
+      "dest": "api/test.ts"
     },
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.ts"
+      "dest": "api/index.ts"
     },
     {
       "src": "/(.*\\..*)",
-      "dest": "/client/dist/$1"
+      "dest": "client/dist/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/client/dist/index.html"
+      "dest": "client/dist/index.html"
     }
   ]
 }
