@@ -17,6 +17,11 @@
       "use": "@vercel/node"
     }
   ],
+  "functions": {
+    "api/*.ts": {
+      "includeFiles": "server/**"
+    }
+  },
   "routes": [
     {
       "src": "/api/test-js",
