@@ -9,11 +9,7 @@
       }
     },
     {
-      "src": "api/test_js.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/*.ts",
+      "src": "api/index.ts",
       "use": "@vercel/node",
       "config": {
         "includeFiles": [
@@ -23,14 +19,6 @@
     }
   ],
   "routes": [
-    {
-      "src": "/api/test-js",
-      "dest": "api/test_js.js"
-    },
-    {
-      "src": "/api/test",
-      "dest": "api/test.ts"
-    },
     {
       "src": "/api/(.*)",
       "dest": "api/index.ts"
