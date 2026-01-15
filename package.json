@@ -4,7 +4,6 @@
     "private": true,
     "scripts": {
         "postinstall": "cd server && npm ci --prefer-offline && npx prisma generate",
-        "vercel-build": "cd client && npm run build",
         "build": "cd client && npm install && npm run build"
     },
     "devDependencies": {
