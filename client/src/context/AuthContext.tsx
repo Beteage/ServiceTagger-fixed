@@ -6,6 +6,9 @@ interface User {
     email: string;
     role: string;
     tenantId: string;
+    tenant?: {
+        subscriptionStatus: string;
+    };
 }
 
 interface AuthContextType {

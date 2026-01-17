@@ -10,6 +10,7 @@ export const search = async (req: Request, res: Response) => {
         return res.json([]);
     }
 
+    console.log(`[Search] Request for: '${q}'`);
     const query = q.toLowerCase();
 
     try {
@@ -17,7 +18,7 @@ export const search = async (req: Request, res: Response) => {
         const customers = await prisma.customer.findMany({
             where: {
                 OR: [
-                    { name: { contains: query } }, // Case insensitive usually depends on DB collation
+                    { name: { contains: query } },
                     { phone: { contains: query } },
                     { address: { contains: query } },
                 ]

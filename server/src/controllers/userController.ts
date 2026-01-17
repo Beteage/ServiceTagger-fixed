@@ -34,7 +34,7 @@ export const getProfile = async (req: Request, res: Response) => {
 
 export const updateProfile = async (req: Request, res: Response) => {
     const userId = (req as AuthRequest).user?.userId;
-    const { email, password } = req.body; // Only allowing email/password update for now as schema is limited
+    const { email, password, skills, paypalEmail } = req.body;
 
     try {
         const data: any = {};
@@ -42,6 +42,8 @@ export const updateProfile = async (req: Request, res: Response) => {
         if (password) {
             data.password = await bcrypt.hash(password, 10);
         }
+        if (skills) data.skills = skills;
+        if (paypalEmail) data.paypalEmail = paypalEmail;
 
         const user = await prisma.user.update({
             where: { id: userId },
@@ -52,5 +54,43 @@ export const updateProfile = async (req: Request, res: Response) => {
         res.json({ message: 'Profile updated', user });
     } catch (error) {
         res.status(500).json({ message: 'Error updating profile', error });
+    }
+};
+
+export const getUsers = async (req: Request, res: Response) => {
+    const tenantId = (req as AuthRequest).user?.tenantId;
+
+    try {
+        const users = await prisma.user.findMany({
+            where: { tenantId },
+            select: { id: true, email: true, role: true, skills: true }
+        });
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching users', error });
+    }
+};
+
+export const createUser = async (req: Request, res: Response) => {
+    const tenantId = (req as AuthRequest).user?.tenantId;
+    const { email, password, role, skills } = req.body;
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const user = await prisma.user.create({
+            data: {
+                tenantId: tenantId!,
+                email,
+                password: hashedPassword,
+                role: role || 'Technician',
+                skills
+            },
+            select: { id: true, email: true, role: true }
+        });
+
+        res.status(201).json(user);
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating user', error });
     }
 };

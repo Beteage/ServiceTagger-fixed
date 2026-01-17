@@ -46,6 +46,7 @@ export const getJobs = async (req: Request, res: Response) => {
             },
             include: {
                 customer: true,
+                technician: true
             }
         });
         res.json(jobs);
@@ -57,12 +58,13 @@ export const getJobs = async (req: Request, res: Response) => {
 import { io } from '../server';
 
 export const updateJobStatus = async (req: Request, res: Response) => {
+    const tenantId = (req as AuthRequest).user?.tenantId;
     const { id } = req.params;
     const { status } = req.body;
 
     try {
         const job = await prisma.job.update({
-            where: { id },
+            where: { id, tenantId: tenantId! },
             data: { status },
             include: { customer: true }
         });
@@ -73,5 +75,76 @@ export const updateJobStatus = async (req: Request, res: Response) => {
         res.json(job);
     } catch (error) {
         res.status(500).json({ message: 'Error updating job', error });
+    }
+};
+
+export const getJobById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const tenantId = (req as AuthRequest).user?.tenantId;
+
+    try {
+        const job = await prisma.job.findFirst({
+            where: { id, tenantId: tenantId! },
+            include: { customer: true, technician: true }
+        });
+        if (!job) return res.status(404).json({ message: 'Job not found' });
+        res.json(job);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching job', error });
+    }
+};
+
+export const updateJob = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { description, technicianId, scheduledStart, status } = req.body;
+    const tenantId = (req as AuthRequest).user?.tenantId;
+
+    try {
+        const job = await prisma.job.update({
+            where: { id, tenantId: tenantId! },
+            data: {
+                technicianId,
+                scheduledStart: scheduledStart ? new Date(scheduledStart) : undefined,
+                status
+            },
+            include: { customer: true, technician: true }
+        });
+
+        // Emit update
+        io.emit('job_update', job);
+
+        res.json(job);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating job', error });
+    }
+};
+
+export const deleteJob = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const tenantId = (req as AuthRequest).user?.tenantId;
+
+    try {
+        const job = await prisma.job.findFirst({
+            where: { id, tenantId: tenantId! }
+        });
+
+        if (!job) {
+            return res.status(404).json({ message: 'Job not found' });
+        }
+
+        // Delete related invoices first
+        await prisma.invoiceItem.deleteMany({ where: { invoice: { jobId: id } } });
+        await prisma.invoice.deleteMany({ where: { jobId: id } });
+
+        // Delete Job
+        await prisma.job.delete({ where: { id } });
+
+        // Emit delete event if needed
+        io.emit('job_deleted', { id });
+
+        res.json({ message: 'Job deleted successfully' });
+    } catch (error) {
+        console.error('Delete job error:', error);
+        res.status(500).json({ message: 'Error deleting job', error });
     }
 };

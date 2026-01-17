@@ -11,9 +11,11 @@ import {
     LogOut,
     Menu,
     FolderOpen,
-    BrainCircuit
+    BrainCircuit,
+    Calendar
 } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { Toaster } from 'sonner';
 
 interface MainLayoutProps {
     children: React.ReactNode;
@@ -37,10 +39,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
     const navItems = [
         { label: 'Dispatch', icon: LayoutDashboard, path: '/dashboard' },
+        { label: 'Schedule', icon: Calendar, path: '/schedule' },
         { label: 'The Brain', icon: BrainCircuit, path: '/brain' },
         { label: 'Customers', icon: Users, path: '/customers' },
         { label: 'Pricebook', icon: FolderOpen, path: '/pricebook' },
         { label: 'Invoices', icon: FileText, path: '/invoices' },
+        { label: 'Team', icon: Users, path: '/team' },
         { label: 'Settings', icon: Settings, path: '/settings' },
     ];
 
@@ -132,7 +136,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 transition-colors text-slate-400 group-focus-within:text-brand" size={16} />
                             <input
                                 type="text"
-                                placeholder="Search..."
+                                placeholder="Search customers, jobs, invoices..."
                                 value={searchQuery}
                                 onChange={(e) => {
                                     setSearchQuery(e.target.value);
@@ -184,7 +188,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                         </button>
                         <div
                             className="h-9 w-9 rounded-full text-white flex items-center justify-center font-bold text-sm shadow-md ring-2 ring-white cursor-pointer transition-all active:scale-95 bg-gradient-to-br from-slate-700 to-slate-900 shadow-slate-900/20"
-                            onClick={() => alert("Profile Settings coming soon!")}
+                            onClick={() => navigate('/profile')}
                         >
                             {user?.email?.charAt(0).toUpperCase()}
                         </div>
@@ -196,6 +200,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     {children}
                 </main>
             </div>
+            <Toaster position="top-right" richColors />
         </div>
     );
 };

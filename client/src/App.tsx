@@ -9,12 +9,23 @@ import PricebookPage from './pages/PricebookPage';
 import CustomersPage from './pages/CustomersPage';
 import InvoicesPage from './pages/InvoicesPage';
 import SettingsPage from './pages/SettingsPage';
+import ProfilePage from './pages/ProfilePage';
+import TeamPage from './pages/TeamPage';
+import SchedulePage from './pages/SchedulePage';
+import { Toaster } from 'sonner';
+
+import CompleteSignupPage from './pages/CompleteSignupPage';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { token, isLoading } = useAuth();
+  const { token, user, isLoading } = useAuth();
 
   if (isLoading) return <div>Loading...</div>;
   if (!token) return <Navigate to="/login" />;
+
+  // Paywall Check removed as per user request ("all logins should be free")
+  // if (user?.tenant?.subscriptionStatus !== 'active' && user?.role !== 'SuperAdmin') {
+  //   return <Navigate to={`/complete-signup/${user?.id}`} />;
+  // }
 
   return <>{children}</>;
 };
@@ -27,11 +38,22 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/admin" element={<AdminAccessPage />} />
+
+          <Route path="/complete-signup/:userId" element={<CompleteSignupPage />} />
+
           <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/schedule"
+            element={
+              <ProtectedRoute>
+                <SchedulePage />
               </ProtectedRoute>
             }
           />
@@ -60,6 +82,14 @@ function App() {
             }
           />
           <Route
+            path="/team"
+            element={
+              <ProtectedRoute>
+                <TeamPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/invoices"
             element={
               <ProtectedRoute>
@@ -75,8 +105,17 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>
+        <Toaster />
       </AuthProvider>
     </BrowserRouter>
   );

@@ -1,29 +1,46 @@
 import { Request, Response } from 'express';
-import Stripe from 'stripe';
-
-// Initialize Stripe with env var or dummy for dev
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock', {
-    apiVersion: '2025-12-15.clover',
-    typescript: true,
-});
+import checkoutNodeJssdk from '@paypal/checkout-server-sdk';
+import { client } from '../utils/paypalClient';
 
 export const createPaymentIntent = async (req: Request, res: Response) => {
-    const { amount, currency = 'usd' } = req.body;
+    // For PayPal, we create an "Order" instead of a PaymentIntent
+    const { amount, currency = 'USD' } = req.body;
+
+    const request = new checkoutNodeJssdk.orders.OrdersCreateRequest();
+    request.prefer("return=representation");
+    request.requestBody({
+        intent: 'CAPTURE',
+        purchase_units: [{
+            amount: {
+                currency_code: currency.toUpperCase(),
+                value: amount.toString()
+            }
+        }]
+    });
 
     try {
-        // If no real key, simulate success for MVP demo
-        if (!process.env.STRIPE_SECRET_KEY) {
-            console.log('Mocking Payment Intent for:', amount);
-            return res.json({ clientSecret: 'pi_mock_secret_12345' });
-        }
-
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: Math.round(amount * 100), // cents
-            currency,
-        });
-
-        res.json({ clientSecret: paymentIntent.client_secret });
+        const order = await client().execute(request);
+        res.json({ id: order.result.id });
     } catch (error) {
-        res.status(500).json({ message: 'Error creating payment intent', error });
+        console.error(error);
+        res.status(500).json({ message: 'Error creating PayPal order', error });
+    }
+};
+
+export const capturePayment = async (req: Request, res: Response) => {
+    const { orderId } = req.body;
+
+    const request = new checkoutNodeJssdk.orders.OrdersCaptureRequest(orderId);
+    request.requestBody({} as any);
+
+    try {
+        const capture = await client().execute(request);
+        // Here you would find the Invoice and update status to PAID
+        // const invoiceId = ... (need to pass checking logic)
+
+        res.json(capture.result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error capturing PayPal order', error });
     }
 };

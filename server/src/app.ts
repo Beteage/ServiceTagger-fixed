@@ -11,14 +11,48 @@ import searchRoutes from './routes/searchRoutes';
 import pricebookRoutes from './routes/pricebookRoutes';
 import dispatchRoutes from './routes/dispatchRoutes';
 import aiRoutes from './routes/aiRoutes';
+import pricingRoutes from './routes/pricingRoutes';
+import upsellRoutes from './routes/upsellRoutes';
+import seedRoutes from './routes/seedRoutes';
 import userRoutes from './routes/userRoutes';
+import webhookRoutes from './routes/webhookRoutes';
+
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 
 const app = express();
 const prisma = new PrismaClient();
 
+// Security Headers
+app.use(helmet());
+
+// Rate Limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+app.use(limiter);
+
+// Webhook Route (Raw Body required for verification)
+// Must be defined BEFORE express.json()
+app.use('/api/webhook', express.raw({ type: 'application/json', verify: (req: any, res, buf) => { req.rawBody = buf; } }), webhookRoutes);
+
 app.use(express.json());
+
+// CORS Configuration
+const allowedOrigins = process.env.CLIENT_URL ? [process.env.CLIENT_URL, 'http://localhost:5173'] : ['http://localhost:5173'];
 app.use(cors({
-    origin: "*", // Allow all for MVP
+    origin: (origin, callback) => {
+        // Allow no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) { // Allow local + configured + vercel preview
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
 }));
 
@@ -50,5 +84,8 @@ app.use('/api/search', searchRoutes);
 app.use('/api/pricebook', pricebookRoutes);
 app.use('/api/dispatch', dispatchRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/pricing', pricingRoutes);
+app.use('/api/upsells', upsellRoutes);
+app.use('/api/seed', seedRoutes);
 
 export default app;
