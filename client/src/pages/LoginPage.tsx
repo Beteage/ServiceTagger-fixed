@@ -68,6 +68,7 @@ const LoginPage: React.FC = () => {
                 </form>
 
                 <div className="mt-8 pt-6 border-t border-slate-100 mb-4">
+                    <p className="text-center text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Quick Access</p>
                     <button
                         type="button"
                         onClick={() => {
@@ -84,9 +85,9 @@ const LoginPage: React.FC = () => {
                                     });
                             }
                         }}
-                        className="w-full text-xs font-bold text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors"
+                        className="w-full bg-slate-100 text-slate-700 font-semibold py-2 px-4 rounded-lg hover:bg-slate-200 transition-colors text-sm"
                     >
-                        Quick Access
+                        Admin Quick Access
                     </button>
                 </div>
 
