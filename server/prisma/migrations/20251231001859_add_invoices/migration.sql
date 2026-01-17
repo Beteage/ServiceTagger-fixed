@@ -1,9 +1,0 @@
--- CreateTable
-CREATE TABLE "Invoice" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "jobId" TEXT NOT NULL,
-    "amount" REAL NOT NULL,
-    "status" TEXT NOT NULL DEFAULT 'Draft',
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "Invoice_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES "Job" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
-);
