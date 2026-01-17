@@ -42,7 +42,7 @@ app.use('/api/webhook', express.raw({ type: 'application/json', verify: (req: an
 app.use(express.json());
 
 // CORS Configuration
-const allowedOrigins = process.env.CLIENT_URL ? [process.env.CLIENT_URL, 'http://localhost:5173'] : ['http://localhost:5173'];
+const allowedOrigins = process.env.CLIENT_URL ? [process.env.CLIENT_URL, 'http://localhost:5173', 'https://servicetagger.com', 'https://www.servicetagger.com'] : ['http://localhost:5173', 'https://servicetagger.com', 'https://www.servicetagger.com'];
 app.use(cors({
     origin: (origin, callback) => {
         // Allow no origin (like mobile apps or curl requests)
