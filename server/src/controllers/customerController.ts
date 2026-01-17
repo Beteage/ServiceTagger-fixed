@@ -18,14 +18,10 @@ export const createCustomer = async (req: Request, res: Response) => {
             data: {
                 tenantId: tenantId!,
                 name,
-                // email, // Note: Email not in schema yet based on previous view, but assuming standard fields. Checking schema...
-                // Schema checks: name, address, phone, lat, lng, tenantId. No email in Customer schema based on previous `view_file`.
-                // I will remove email from data if not in schema.
+                email,
                 address,
                 phone,
-                // @ts-ignore: Lat/Lng added in recent migration, types might be lagging in IDE check
                 lat,
-                // @ts-ignore
                 lng
             },
         });
@@ -45,5 +41,40 @@ export const getCustomers = async (req: Request, res: Response) => {
         res.json(customers);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching customers', error });
+    }
+};
+
+export const deleteCustomer = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const tenantId = (req as AuthRequest).user?.tenantId;
+
+    try {
+        // Enforce tenant isolation
+        const customer = await prisma.customer.findFirst({
+            where: { id, tenantId: tenantId! }
+        });
+
+        if (!customer) {
+            return res.status(404).json({ message: 'Customer not found' });
+        }
+
+        // Cascading delete
+        // 1. Delete Invoices linked to Jobs linked to this Customer
+        await prisma.invoiceItem.deleteMany({ where: { invoice: { job: { customerId: id } } } }); // Deepest level first
+        await prisma.invoice.deleteMany({ where: { job: { customerId: id } } });
+
+        // 2. Delete Jobs
+        await prisma.job.deleteMany({ where: { customerId: id } });
+
+        // 3. Delete Assets
+        await prisma.asset.deleteMany({ where: { customerId: id } });
+
+        // 4. Delete Customer
+        await prisma.customer.delete({ where: { id } });
+
+        res.json({ message: 'Customer and related data deleted successfully' });
+    } catch (error) {
+        console.error('Delete customer error:', error);
+        res.status(500).json({ message: 'Error deleting customer', error });
     }
 };

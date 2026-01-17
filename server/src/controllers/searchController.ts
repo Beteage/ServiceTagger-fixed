@@ -10,6 +10,7 @@ export const search = async (req: Request, res: Response) => {
         return res.json([]);
     }
 
+    console.log(`[Search] Request for: '${q}'`);
     const query = q.toLowerCase();
 
     try {
@@ -17,9 +18,9 @@ export const search = async (req: Request, res: Response) => {
         const customers = await prisma.customer.findMany({
             where: {
                 OR: [
-                    { name: { contains: query } }, // Case insensitive usually depends on DB collation
-                    { phone: { contains: query } },
-                    { address: { contains: query } },
+                    { name: { contains: query, mode: 'insensitive' } },
+                    { phone: { contains: query, mode: 'insensitive' } },
+                    { address: { contains: query, mode: 'insensitive' } },
                 ]
             },
             take: 5
@@ -28,10 +29,10 @@ export const search = async (req: Request, res: Response) => {
         const assets = await prisma.asset.findMany({
             where: {
                 OR: [
-                    { type: { contains: query } },
-                    { serial: { contains: query } },
-                    { make: { contains: query } },
-                    { model: { contains: query } }
+                    { type: { contains: query, mode: 'insensitive' } },
+                    { serial: { contains: query, mode: 'insensitive' } },
+                    { make: { contains: query, mode: 'insensitive' } },
+                    { model: { contains: query, mode: 'insensitive' } }
                 ]
             },
             include: { customer: true },

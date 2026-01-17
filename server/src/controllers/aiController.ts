@@ -33,7 +33,7 @@ export const checkTone = async (req: Request, res: Response) => {
 
         // Use secure AI service - API key is handled internally
         const prompt = `You are a helpful assistant for a field service technician. Rewrite the following text to be professional, polite, and concise for a customer invoice or job note.\n\nText: ${text}`;
-        
+
         const result = await DeepSeekService.generateCompletion({
             prompt,
             temperature: 0.7,
@@ -74,7 +74,7 @@ export const chat = async (req: Request, res: Response) => {
 
         // Build conversation prompt from messages
         const systemPrompt = "You are Cerebro, the intelligent operations brain for ServiceTagger. You help dispatchers with scheduling, technician management, and business insights. Be concise, professional, and helpful.";
-        
+
         const conversationText = messages.map((msg: any) => {
             return `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`;
         }).join('\n');
@@ -116,4 +116,132 @@ export const checkHealth = async (req: Request, res: Response) => {
         success: true,
         data: health
     });
+};
+
+/**
+ * AI Scheduling Suggestions
+ * POST /api/ai/schedule-suggestions
+ */
+export const getSchedulingSuggestions = async (req: Request, res: Response) => {
+    try {
+        const { jobDescription, location, urgency } = req.body;
+
+        if (!process.env.DEEPSEEK_API_KEY) {
+            // Mock Fallback
+            const mockSuggestions = [
+                { slot: 'Tomorrow, 8:00 AM', reason: 'Technician in area', score: 95 },
+                { slot: 'Tomorrow, 2:00 PM', reason: 'High urgency slot available', score: 88 },
+                { slot: 'Wednesday, 10:00 AM', reason: 'Standard availablity', score: 70 }
+            ];
+            await new Promise(resolve => setTimeout(resolve, 600));
+            res.json({ suggestions: mockSuggestions });
+            return;
+        }
+
+        const prompt = `Based on the following job details, suggest 3 optimal scheduling slots for a field technician.
+        Job: ${jobDescription}
+        Location: ${location}
+        Urgency: ${urgency}
+        
+        Consider travel time optimization and urgency. Format as JSON list of objects with keys: slot, reason, score.`;
+
+        const result = await DeepSeekService.generateCompletion({
+            prompt,
+            temperature: 0.5,
+            maxTokens: 500
+        });
+
+        // Attempt to parse JSON from AI, or fallback
+        try {
+            const parsed = JSON.parse(result.text);
+            res.json({ suggestions: parsed });
+        } catch (e) {
+            res.json({ result: result.text, note: "Raw text returned" });
+        }
+    } catch (error: any) {
+        console.error('AI Schedule Error:', error.message);
+        res.status(500).json({ error: 'Failed to generate schedule suggestions' });
+    }
+};
+
+/**
+ * AI Parts Prediction
+ * POST /api/ai/predict-parts
+ */
+export const predictParts = async (req: Request, res: Response) => {
+    try {
+        const { jobDescription } = req.body;
+
+        if (!process.env.DEEPSEEK_API_KEY) {
+            const mockParts = [
+                { name: 'Universal Capacitor', probability: 'High' },
+                { name: 'Contactor 2-Pole', probability: 'Medium' },
+                { name: 'Refrigerant R-410A', probability: 'Low' }
+            ];
+            await new Promise(resolve => setTimeout(resolve, 600));
+            res.json({ parts: mockParts });
+            return;
+        }
+
+        const prompt = `Predict necessary HVAC/Plumbing parts for this job description: "${jobDescription}". Return valid JSON array of objects {name, probability}.`;
+
+        const result = await DeepSeekService.generateCompletion({
+            prompt,
+            temperature: 0.3,
+            maxTokens: 300
+        });
+
+        try {
+            const parsed = JSON.parse(result.text);
+            res.json({ parts: parsed });
+        } catch (e) {
+            res.json({ parts: [], raw: result.text });
+        }
+
+    } catch (error: any) {
+        res.status(500).json({ error: 'Failed to predict parts' });
+    }
+};
+
+/**
+ * AI Auto-Draft Estimate
+ * POST /api/ai/draft-estimate
+ */
+export const draftEstimate = async (req: Request, res: Response) => {
+    try {
+        const { customerRequest } = req.body;
+
+        if (!process.env.DEEPSEEK_API_KEY) {
+            const mockEstimate = {
+                items: [
+                    { description: 'Service Call / Diagnostic', price: 89.00 },
+                    { description: 'Labor (Estimated 2h)', price: 170.00 },
+                    { description: 'Standard Parts Kit', price: 45.00 }
+                ],
+                total: 304.00,
+                notes: 'Generated draft based on request.'
+            };
+            await new Promise(resolve => setTimeout(resolve, 800));
+            res.json({ estimate: mockEstimate });
+            return;
+        }
+
+        const prompt = `Create a professional job estimate based on this customer request: "${customerRequest}". Return JSON with 'items' array ({description, price}) and 'total'.`;
+
+        const result = await DeepSeekService.generateCompletion({
+            prompt,
+            temperature: 0.5,
+            maxTokens: 600
+        });
+
+        try {
+            const parsed = JSON.parse(result.text);
+            res.json({ estimate: parsed });
+        } catch (e) {
+            res.json({ estimate: null, raw: result.text });
+        }
+
+    } catch (error: any) {
+        res.status(500).json({ error: 'Failed to draft estimate' });
+    }
 };

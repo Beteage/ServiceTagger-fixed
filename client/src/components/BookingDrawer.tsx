@@ -35,10 +35,12 @@ const BookingDrawer: React.FC<BookingDrawerProps> = ({ isOpen, onClose, onJobCre
         const search = async () => {
             if (query.length < 2) return;
             try {
+                // If axios baseURL is '/api', this becomes '/api/search'
                 const { data } = await api.get(`/search?q=${encodeURIComponent(query)}`);
                 setCustomers(data);
             } catch (err) {
                 console.error(err);
+                alert("Search failed: " + (err as any).message);
             }
         };
         const timer = setTimeout(search, 300);
@@ -121,6 +123,21 @@ const BookingDrawer: React.FC<BookingDrawerProps> = ({ isOpen, onClose, onJobCre
         }
     };
 
+    const [isCreatingCustomer, setIsCreatingCustomer] = useState(false);
+    const [newCustomer, setNewCustomer] = useState({ name: '', phone: '', address: '', email: '' });
+
+    const handleCreateCustomer = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const { data } = await api.post('/customers', newCustomer);
+            setSelectedCustomer(data);
+            setIsCreatingCustomer(false);
+            setNewCustomer({ name: '', phone: '', address: '', email: '' });
+        } catch (err: any) {
+            alert('Failed to create customer: ' + (err.response?.data?.message || err.message));
+        }
+    };
+
     return (
         <div className={cn(
             "fixed inset-y-0 right-0 w-full md:w-[480px] bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50 flex flex-col",
@@ -128,12 +145,73 @@ const BookingDrawer: React.FC<BookingDrawerProps> = ({ isOpen, onClose, onJobCre
         )}>
             <div className="p-6 h-full flex flex-col">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-slate-800 tracking-tight">New Booking</h2>
+                    <h2 className="text-2xl font-bold text-slate-800 tracking-tight">
+                        {isCreatingCustomer ? "New Customer" : "New Booking"}
+                    </h2>
                     <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors p-2 hover:bg-slate-100 rounded-full">✕</button>
                 </div>
 
-                {!selectedCustomer ? (
-                    <div className="flex-1">
+                {isCreatingCustomer ? (
+                    <form onSubmit={handleCreateCustomer} className="flex-1 flex flex-col gap-4 animate-in slide-in-from-right-4 duration-200">
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1">Full Name</label>
+                            <input
+                                required
+                                className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="Jane Doe"
+                                value={newCustomer.name}
+                                onChange={e => setNewCustomer({ ...newCustomer, name: e.target.value })}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1">Phone</label>
+                            <input
+                                required
+                                className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="(555) 123-4567"
+                                value={newCustomer.phone}
+                                onChange={e => setNewCustomer({ ...newCustomer, phone: e.target.value })}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1">Address</label>
+                            <input
+                                required
+                                className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="123 Main St"
+                                value={newCustomer.address}
+                                onChange={e => setNewCustomer({ ...newCustomer, address: e.target.value })}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1">Email (Optional)</label>
+                            <input
+                                type="email"
+                                className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="jane@example.com"
+                                value={newCustomer.email}
+                                onChange={e => setNewCustomer({ ...newCustomer, email: e.target.value })}
+                            />
+                        </div>
+
+                        <div className="mt-auto flex gap-3 pt-4">
+                            <button
+                                type="button"
+                                onClick={() => setIsCreatingCustomer(false)}
+                                className="flex-1 py-3 text-slate-600 font-bold hover:bg-slate-100 rounded-lg border border-slate-200"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-lg shadow-blue-600/20"
+                            >
+                                Save & Select
+                            </button>
+                        </div>
+                    </form>
+                ) : !selectedCustomer ? (
+                    <div className="flex-1 flex flex-col">
                         <label className="block text-sm font-semibold text-slate-700 mb-2">Find Customer</label>
                         <input
                             autoFocus
@@ -142,7 +220,14 @@ const BookingDrawer: React.FC<BookingDrawerProps> = ({ isOpen, onClose, onJobCre
                             value={query}
                             onChange={e => setQuery(e.target.value)}
                         />
-                        <div className="space-y-2 overflow-y-auto max-h-[60vh]">
+
+                        {/* Results List */}
+                        <div className="flex-1 overflow-y-auto max-h-[50vh] space-y-2 mb-4">
+                            {customers.length === 0 && query.length > 2 && (
+                                <div className="text-center py-8 text-slate-500">
+                                    No customers found matching "{query}"
+                                </div>
+                            )}
                             {customers.map((result: any) => (
                                 <div
                                     key={`${result.type}-${result.id}`}
@@ -160,6 +245,16 @@ const BookingDrawer: React.FC<BookingDrawerProps> = ({ isOpen, onClose, onJobCre
                                     <span className="opacity-0 group-hover:opacity-100 text-blue-600">Select →</span>
                                 </div>
                             ))}
+                        </div>
+
+                        {/* Create New Prompt */}
+                        <div className="mt-auto pt-4 border-t border-slate-100">
+                            <button
+                                onClick={() => setIsCreatingCustomer(true)}
+                                className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 font-bold hover:border-brand hover:text-brand hover:bg-brand/5 transition-all flex items-center justify-center gap-2"
+                            >
+                                + Create New Customer
+                            </button>
                         </div>
                     </div>
                 ) : (

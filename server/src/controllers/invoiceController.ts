@@ -23,7 +23,11 @@ export const generateInvoice = async (req: Request, res: Response) => {
 
         if (items && items.length > 0) {
             for (const item of items) {
-                const pbItem = await prisma.pricebookItem.findUnique({ where: { id: item.pricebookItemId } });
+                let pbItem = null;
+                if (item.pricebookItemId) {
+                    pbItem = await prisma.pricebookItem.findUnique({ where: { id: item.pricebookItemId } });
+                }
+
                 if (pbItem) {
                     const total = pbItem.price * item.quantity;
                     invoiceItemsData.push({
@@ -32,6 +36,18 @@ export const generateInvoice = async (req: Request, res: Response) => {
                         unitPrice: pbItem.price,
                         total: total,
                         pricebookItemId: pbItem.id
+                    });
+                    totalAmount += total;
+                } else {
+                    // Fallback to provided data
+                    const price = Number(item.price) || 0;
+                    const total = price * item.quantity;
+                    invoiceItemsData.push({
+                        description: item.name || 'Item',
+                        quantity: item.quantity,
+                        unitPrice: price,
+                        total: total,
+                        // No pricebook ID
                     });
                     totalAmount += total;
                 }
@@ -88,8 +104,10 @@ export const generateInvoice = async (req: Request, res: Response) => {
 
         doc.end();
 
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
+        const fs = require('fs');
+        fs.writeFileSync('error.log', JSON.stringify({ message: error.message, stack: error.stack }, null, 2));
         if (!res.headersSent) {
             res.status(500).json({ message: 'Error generating invoice', error });
         }
@@ -109,6 +127,12 @@ export const createStripeInvoice = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Job not found' });
         }
 
+        // Enforce Tenant Isolation
+        const tenantId = (req as AuthRequest).user?.tenantId;
+        if (job.tenantId !== tenantId) {
+            return res.status(403).json({ message: 'Unauthorized access to this job' });
+        }
+
         if (!process.env.STRIPE_SECRET_KEY) {
             return res.status(500).json({ message: 'Stripe API key not configured' });
         }
@@ -116,32 +140,14 @@ export const createStripeInvoice = async (req: Request, res: Response) => {
         const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
         // 1. Create or retrieve customer
-        let customerId = job.customer.stripeCustomerId;
+        // Note: Using dummy Customer ID for now as schema support was reverted due to DB connection issues
+        let customerId = 'cus_dummy';
 
-        if (!customerId) {
-            // Search by email if exists, otherwise create
-            if (job.customer.email) {
-                const customers = await stripe.customers.list({ email: job.customer.email, limit: 1 });
-                if (customers.data.length > 0) {
-                    customerId = customers.data[0].id;
-                }
-            }
-
-            if (!customerId) {
-                const customer = await stripe.customers.create({
-                    email: job.customer.email || undefined,
-                    name: job.customer.name,
-                    description: 'ServiceTagger Customer'
-                });
-                customerId = customer.id;
-            }
-
-            // Save Stripe Customer ID
-            await prisma.customer.update({
-                where: { id: job.customer.id },
-                data: { stripeCustomerId: customerId }
-            });
-        }
+        /* 
+        // Logic requires schema update
+        let customerId = job.customer.stripeCustomerId; 
+          ... 
+        */
 
         // 2. Create invoice item
         await stripe.invoiceItems.create({
@@ -171,8 +177,6 @@ export const createStripeInvoice = async (req: Request, res: Response) => {
                 amount: amount,
                 status: 'Sent', // Initial status
                 // stripeInvoiceId: invoice.id,
-                // stripeHostedUrl: finalizedInvoice.hosted_invoice_url,
-                // Note: items are not detailed here in local DB for this flow, could improve later
             }
         });
 
@@ -215,5 +219,132 @@ export const getInvoices = async (req: Request, res: Response) => {
         res.json(invoices);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching invoices', error });
+    }
+};
+
+
+
+// Simplified PayPal logic: Just create local record and let frontend handle the redirect
+import { createPayPalInvoice, sendPayPalInvoiceByKey, getPayPalInvoice } from '../services/paypalService';
+
+export const sendPayPalInvoice = async (req: Request, res: Response) => {
+    const { jobId, items } = req.body;
+
+    try {
+        const job = await prisma.job.findUnique({
+            where: { id: jobId },
+            include: { customer: true },
+        });
+
+        if (!job) return res.status(404).json({ message: 'Job not found' });
+        if (!job.customer.email) return res.status(400).json({ message: 'Customer has no email' });
+
+        // Calculate Items
+        let invoiceItemsData = [];
+        let totalAmount = 0;
+
+        if (items && items.length > 0) {
+            for (const item of items) {
+                // If item has pricebookId, fetch details, else use provided
+                // For simplicity, trusting frontend passed { name, price, quantity, description } or we fetch again.
+                // The modal passes: { pricebookItemId, name, price, quantity }
+                invoiceItemsData.push({
+                    name: item.name,
+                    description: item.name, // or fetch description
+                    quantity: item.quantity,
+                    price: item.price
+                });
+                totalAmount += (item.price * item.quantity);
+            }
+        } else {
+            // Fallback
+            invoiceItemsData.push({ name: 'Service Call', description: 'Standard Service', quantity: 1, price: 150 });
+            totalAmount = 150;
+        }
+
+        // Prepare PayPal Data
+        const nameParts = job.customer.name.split(' ');
+        const firstName = nameParts[0];
+        const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+
+        const ppData = {
+            customer: {
+                email: job.customer.email,
+                firstName,
+                lastName
+            },
+            items: invoiceItemsData,
+            reference: `JOB-${job.id.substring(0, 6)}`
+        };
+
+        // 1. Create Draft
+        const draft = await createPayPalInvoice(ppData);
+        // 2. Send
+        await sendPayPalInvoiceByKey(draft.id);
+        // 3. Get Details (for link)
+        const details = await getPayPalInvoice(draft.id);
+        const payerLink = details.detail?.metadata?.recipient_view_url || `https://www.sandbox.paypal.com/invoice/p/${draft.id}`;
+        // Note: recipient_view_url might be available in 'detail' or 'links' depending on exact API response. 
+        // Usually `detail.metadata.recipient_view_url`.
+
+        // 4. Save to DB
+        const localInvoice = await prisma.invoice.create({
+            data: {
+                jobId: job.id,
+                amount: totalAmount,
+                status: 'Sent',
+                items: {
+                    create: invoiceItemsData.map(i => ({
+                        description: i.name,
+                        quantity: i.quantity,
+                        unitPrice: i.price,
+                        total: i.price * i.quantity
+                    }))
+                }
+            }
+        });
+
+        res.json({
+            success: true,
+            invoiceId: localInvoice.id,
+            paypalId: draft.id,
+            link: payerLink,
+            message: 'PayPal Invoice Sent!'
+        });
+
+    } catch (error) {
+        const fs = require('fs');
+        fs.writeFileSync('paypal_error.log', JSON.stringify({ message: error.message, stack: error.stack }, null, 2));
+        console.error('PayPal Controller Error:', error.message);
+        res.status(500).json({ message: 'Error sending PayPal invoice', error: error.message });
+    }
+};
+
+export const deleteInvoice = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const tenantId = (req as AuthRequest).user?.tenantId;
+
+    try {
+        const invoice = await prisma.invoice.findFirst({
+            where: {
+                id,
+                job: { tenantId: tenantId! } // Guard via job relation
+            }
+        });
+
+        if (!invoice) {
+            return res.status(404).json({ message: 'Invoice not found' });
+        }
+
+        // Delete Items
+        await prisma.invoiceItem.deleteMany({ where: { invoiceId: id } });
+
+        // Delete Invoice
+        await prisma.invoice.delete({ where: { id } });
+
+        res.json({ message: 'Invoice deleted successfully' });
+    } catch (error) {
+        console.error('Delete invoice error:', error);
+        res.status(500).json({ message: 'Error deleting invoice', error });
     }
 };

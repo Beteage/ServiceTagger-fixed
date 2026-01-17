@@ -55,11 +55,14 @@ const ChatInput: React.FC<ChatInputProps> = ({ centered = false, input, setInput
         </form>
         {centered && (
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-                <button onClick={() => { setInput("Take me to customers"); }} className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-100 hover:border-slate-300 transition-colors">
-                    "Take me to customers"
+                <button onClick={() => { setInput("Schedule repair for AC not cooling (Urgent)"); }} className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-100 hover:border-slate-300 transition-colors">
+                    "Smart Schedule"
                 </button>
-                <button onClick={() => { setInput("Create new invoice"); }} className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-100 hover:border-slate-300 transition-colors">
-                    "Create new invoice"
+                <button onClick={() => { setInput("Predict parts for leaking water heater"); }} className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-100 hover:border-slate-300 transition-colors">
+                    "Predict Parts"
+                </button>
+                <button onClick={() => { setInput("Draft estimate for unexpected furnace noise"); }} className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-100 hover:border-slate-300 transition-colors">
+                    "Draft Estimate"
                 </button>
                 <button onClick={() => { setInput("Show revenue"); }} className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-100 hover:border-slate-300 transition-colors">
                     "Show revenue"
@@ -140,6 +143,80 @@ const AIChat: React.FC = () => {
                 }, 1000);
             }, 600);
             return;
+        }
+
+        // New AI Capabilities Logic
+        const lowerInput = userText.toLowerCase();
+
+        if (lowerInput.includes('schedule') && (lowerInput.includes('repair') || lowerInput.includes('maintenance') || lowerInput.includes('job'))) {
+            // Trigger Scheduling Assistant
+            try {
+                const { data } = await api.post('/ai/schedule-suggestions', {
+                    jobDescription: userText,
+                    location: 'Local Service Area', // In real app, infer from context/user
+                    urgency: lowerInput.includes('urgent') ? 'High' : 'Normal'
+                });
+
+                const suggestions = data.suggestionsAsString || data.suggestions; // Handle if AI returns string vs parsed
+                let responseContent = "Here are some optimal scheduling slots based on urgency and location:\n\n";
+                if (Array.isArray(suggestions)) {
+                    suggestions.forEach((s: any) => {
+                        responseContent += `• **${s.slot}** (Score: ${s.score}%)\n  *${s.reason}*\n\n`;
+                    });
+                } else {
+                    responseContent += JSON.stringify(suggestions);
+                }
+
+                setMessages(prev => [...prev, { role: 'assistant', content: responseContent }]);
+                setInput('');
+                setIsLoading(false);
+                return;
+            } catch (err) {
+                console.error(err);
+                // Fallback to normal chat
+            }
+        }
+
+        if (lowerInput.includes('predict part') || lowerInput.includes('parts needed') || lowerInput.includes('what parts')) {
+            try {
+                const { data } = await api.post('/ai/predict-parts', { jobDescription: userText });
+                let responseContent = "Based on the description, here are the predicted parts needed:\n\n";
+
+                if (Array.isArray(data.parts)) {
+                    data.parts.forEach((p: any) => {
+                        responseContent += `• **${p.name}** (${p.probability} confidence)\n`;
+                    });
+                } else {
+                    responseContent += "Could not identify specific parts.";
+                }
+
+                setMessages(prev => [...prev, { role: 'assistant', content: responseContent }]);
+                setInput('');
+                setIsLoading(false);
+                return;
+            } catch (err) { console.error(err); }
+        }
+
+        if (lowerInput.includes('draft estimate') || lowerInput.includes('create quote')) {
+            try {
+                const { data } = await api.post('/ai/draft-estimate', { customerRequest: userText });
+                const est = data.estimate;
+                let responseContent = "## Draft Estimate\n\n";
+
+                if (est && est.items) {
+                    est.items.forEach((item: any) => {
+                        responseContent += `**${item.description}**: $${item.price}\n`;
+                    });
+                    responseContent += `\n**Total Estimated**: $${est.total}`;
+                } else {
+                    responseContent += "I drafted an estimate but the format was unexpected. Please check the logs.";
+                }
+
+                setMessages(prev => [...prev, { role: 'assistant', content: responseContent }]);
+                setInput('');
+                setIsLoading(false);
+                return;
+            } catch (err) { console.error(err); }
         }
 
         try {

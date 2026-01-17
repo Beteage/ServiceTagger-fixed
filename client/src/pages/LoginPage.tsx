@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -17,7 +18,14 @@ const LoginPage: React.FC = () => {
             login(data.token, data.user);
             navigate('/dashboard');
         } catch (err: any) {
-            setError('Invalid credentials');
+            console.error(err);
+            if (err.response) {
+                setError(err.response.data.message || 'Invalid credentials');
+            } else if (err.request) {
+                setError('Server not reachable. Please check your connection.');
+            } else {
+                setError('An unexpected error occurred.');
+            }
         }
     };
 
@@ -58,11 +66,35 @@ const LoginPage: React.FC = () => {
                         Login
                     </button>
                 </form>
+
+                <div className="mt-8 pt-6 border-t border-slate-100 mb-4">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            const code = prompt("Enter Access Code:");
+                            if (code) {
+                                api.post('/auth/quick-access', { code })
+                                    .then(({ data }) => {
+                                        login(data.token, data.user);
+                                        navigate('/dashboard');
+                                        toast.success("Welcome back, Admin!");
+                                    })
+                                    .catch((err) => {
+                                        toast.error(err.response?.data?.message || "Invalid Code");
+                                    });
+                            }
+                        }}
+                        className="w-full text-xs font-bold text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors"
+                    >
+                        Quick Access
+                    </button>
+                </div>
+
                 <p className="mt-6 text-center text-sm text-slate-500">
                     Don't have an account? <Link to="/register" className="text-brand-dark font-semibold hover:underline">Register</Link>
                 </p>
             </div>
-        </div>
+        </div >
     );
 };
 

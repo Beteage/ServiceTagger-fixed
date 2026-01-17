@@ -1,6 +1,7 @@
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
@@ -11,6 +12,9 @@ model Tenant {
   id        String   @id @default(uuid())
   name      String
   tier      String   @default("basic")
+  subscriptionStatus String @default("basic") // basic (unpaid), active, past_due
+  lemonSqueezyCustomerId String?
+  lemonSqueezySubscriptionId String?
   users     User[]
   customers Customer[]
   jobs      Job[]
@@ -34,7 +38,7 @@ model Customer {
   address  String
   phone    String
   email    String?
-  stripeCustomerId String?
+
   lat      Float?
   lng      Float?
   tenantId String
@@ -74,7 +78,7 @@ model Invoice {
   job       Job      @relation(fields: [jobId], references: [id])
   amount    Float
   status    String   @default("Draft") // Draft, Paid, Void
-  stripeInvoiceId String?
+
   items     InvoiceItem[]
   createdAt DateTime @default(now())
 }

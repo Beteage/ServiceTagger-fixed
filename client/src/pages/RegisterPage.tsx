@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 
 const RegisterPage: React.FC = () => {
@@ -9,15 +11,24 @@ const RegisterPage: React.FC = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    // const { login } = useAuth(); // Optional: Auto-login after register
+    const { login } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await api.post('/auth/register', { businessName, email, password });
-            // Redirect to login or auto-login
-            navigate('/login');
+            const { data } = await api.post('/auth/register', { businessName, email, password });
+            if (data.userId) {
+                // Registration successful, payment required
+                navigate(`/complete-signup/${data.userId}`);
+            } else if (data.token) {
+                // Should not happen with new flow, but safe fallback
+                login(data.token, data.user);
+                navigate('/dashboard');
+            } else {
+                navigate('/login');
+            }
         } catch (err: any) {
+            console.error(err);
             setError(err.response?.data?.message || 'Registration failed. Try again.');
         }
     };

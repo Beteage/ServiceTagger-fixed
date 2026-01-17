@@ -4,12 +4,15 @@ import api from '../api/axios';
 
 import { io } from 'socket.io-client';
 import BookingDrawer from '../components/BookingDrawer';
+import JobDrawer from '../components/JobDrawer';
 import DispatchMap from '../components/DispatchMap';
 import MainLayout from '../components/MainLayout';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import type { DroppableProvided, DraggableProvided, DropResult } from 'react-beautiful-dnd';
 import { cn } from '../lib/utils';
+import { toast } from 'sonner';
 import { Calendar, MapPin, MoreHorizontal, FileText } from 'lucide-react';
+import RevenueAlertBanner from '../components/RevenueAlertBanner';
 
 interface Job {
     id: string;
@@ -22,6 +25,11 @@ interface Job {
         lat?: number;
         lng?: number;
     };
+    technician?: {
+        id: string;
+        email: string;
+        name?: string;
+    };
 }
 
 const DashboardPage: React.FC = () => {
@@ -29,6 +37,7 @@ const DashboardPage: React.FC = () => {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [loading, setLoading] = useState(true);
     const [showDrawer, setShowDrawer] = useState(false);
+    const [selectedJob, setSelectedJob] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'board' | 'map'>('board');
 
     useEffect(() => {
@@ -58,6 +67,20 @@ const DashboardPage: React.FC = () => {
         };
     }, []);
 
+    const [customers, setCustomers] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchCustomers = async () => {
+            try {
+                const { data } = await api.get('/customers');
+                setCustomers(data);
+            } catch (err) {
+                console.error("Failed to fetch customers", err);
+            }
+        };
+        fetchCustomers();
+    }, []);
+
     const fetchJobs = async () => {
         try {
             const { data } = await api.get('/jobs');
@@ -69,10 +92,27 @@ const DashboardPage: React.FC = () => {
         }
     };
 
-    // updateStatus removed
+    const [technicians, setTechnicians] = useState<any[]>([]);
+    const [selectedTechFilter, setSelectedTechFilter] = useState<string>('all');
 
+    useEffect(() => {
+        const fetchTechnicians = async () => {
+            try {
+                const { data } = await api.get('/users');
+                const techs = data.filter((u: any) => u.role.toLowerCase() === 'technician');
+                setTechnicians(techs);
+            } catch (err) { console.error(err); }
+        };
+        fetchTechnicians();
+    }, []);
 
-    const getJobsByStatus = (status: string) => jobs.filter(j => j.status === status);
+    const filteredJobs = selectedTechFilter === 'all'
+        ? jobs
+        : (selectedTechFilter === 'unassigned'
+            ? jobs.filter(j => !j.technician)
+            : jobs.filter(j => j.technician?.id === selectedTechFilter));
+
+    const getJobsByStatus = (status: string) => filteredJobs.filter(j => j.status === status);
 
     const columns: { [key: string]: Job[] } = {
         'Draft': getJobsByStatus('Draft'),
@@ -100,14 +140,13 @@ const DashboardPage: React.FC = () => {
         // Optimistic update
         setJobs(prevJobs => prevJobs.map(job => job.id === draggableId ? { ...job, status: newStatus } : job));
 
-        api.put(`/jobs/${draggableId}/status`, { status: newStatus })
+        api.patch(`/jobs/${draggableId}/status`, { status: newStatus })
             .catch(error => {
                 console.error('Failed to update job status', error);
                 fetchJobs(); // Revert on error
             });
     };
 
-    // Helper to get status color
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'Draft': return 'bg-slate-100 text-slate-600 border-slate-200';
@@ -119,8 +158,23 @@ const DashboardPage: React.FC = () => {
         }
     };
 
+    const handleSeedData = async () => {
+        try {
+            setLoading(true);
+            const { data } = await api.post('/seed');
+            toast.success(`Demo Data Created: ${data.customers} customers, ${data.jobs} jobs`);
+            fetchJobs();
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to seed data");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <MainLayout>
+            <RevenueAlertBanner />
             <div className="p-6 h-full flex flex-col">
                 <div className="flex justify-between items-center mb-6">
                     <div>
@@ -128,6 +182,27 @@ const DashboardPage: React.FC = () => {
                         <p className="text-slate-500 text-sm mt-1">Manage your team's schedule and active jobs.</p>
                     </div>
                     <div className="flex gap-3">
+                        <button
+                            onClick={handleSeedData}
+                            className="text-slate-500 hover:text-brand font-medium text-xs underline mr-2"
+                        >
+                            Seed Demo Data
+                        </button>
+                        <div className="bg-white p-1 rounded-lg border border-slate-200 shadow-sm flex items-center px-2 mr-2">
+                            <span className="text-xs font-bold text-slate-500 mr-2 uppercase tracking-wider">Filter:</span>
+                            <select
+                                className="text-sm border-none outline-none text-slate-700 bg-transparent font-medium cursor-pointer"
+                                value={selectedTechFilter}
+                                onChange={(e) => setSelectedTechFilter(e.target.value)}
+                            >
+                                <option value="all">All Technicians</option>
+                                <option value="unassigned">Unassigned Only</option>
+                                {technicians.map(t => (
+                                    <option key={t.id} value={t.id}>{t.email}</option>
+                                ))}
+                            </select>
+                        </div>
+
                         <div className="bg-white p-1 rounded-lg border border-slate-200 shadow-sm flex">
                             <button
                                 onClick={() => setViewMode('board')}
@@ -197,12 +272,27 @@ const DashboardPage: React.FC = () => {
                                                                             "bg-white p-4 rounded-2xl border border-slate-100 transition-all cursor-grab active:cursor-grabbing group relative overflow-hidden",
                                                                             snapshot.isDragging ? "shadow-2xl ring-2 ring-brand/20 rotate-2 scale-105 border-brand" : "shadow-sm hover:shadow-md hover:border-brand/30"
                                                                         )}
+                                                                        onClick={() => setSelectedJob(job.id)}
                                                                     >
 
                                                                         <div className="flex justify-between items-start mb-3">
-                                                                            <span className={cn("text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded-md bg-opacity-50", getStatusColor(job.status))}>
-                                                                                {job.status}
-                                                                            </span>
+                                                                            <div className="flex gap-2">
+                                                                                <span className={cn("text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded-md bg-opacity-50", getStatusColor(job.status))}>
+                                                                                    {job.status}
+                                                                                </span>
+                                                                                {job.technician ? (
+                                                                                    <div className="flex items-center gap-1 bg-slate-100 px-1.5 py-0.5 rounded-md border border-slate-200">
+                                                                                        <div className="w-4 h-4 rounded-full bg-slate-800 text-white text-[9px] flex items-center justify-center font-bold">
+                                                                                            {job.technician.email.charAt(0).toUpperCase()}
+                                                                                        </div>
+                                                                                        <span className="text-[10px] font-medium text-slate-600 max-w-[60px] truncate">{job.technician.email.split('@')[0]}</span>
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <div className="flex items-center gap-1 bg-red-50 px-1.5 py-0.5 rounded-md border border-red-100 text-red-600">
+                                                                                        <span className="text-[10px] font-bold">Unassigned</span>
+                                                                                    </div>
+                                                                                )}
+                                                                            </div>
                                                                             <button className="text-slate-300 hover:text-slate-600 transition-colors bg-slate-50 p-1 rounded-md opacity-0 group-hover:opacity-100">
                                                                                 <MoreHorizontal size={14} />
                                                                             </button>
@@ -248,7 +338,7 @@ const DashboardPage: React.FC = () => {
                         </div>
                     ) : (
                         <div className="h-full w-full">
-                            <DispatchMap jobs={jobs} />
+                            <DispatchMap jobs={jobs} customers={customers} />
                         </div>
                     )}
                 </div>
@@ -258,8 +348,16 @@ const DashboardPage: React.FC = () => {
                     onClose={() => setShowDrawer(false)}
                     onJobCreated={() => { fetchJobs(); }}
                 />
+
+                <JobDrawer
+                    isOpen={!!selectedJob}
+                    onClose={() => setSelectedJob(null)}
+                    jobId={selectedJob}
+                    onJobUpdated={() => fetchJobs()}
+                    allJobs={jobs}
+                />
             </div>
-        </MainLayout>
+        </MainLayout >
     );
 };
 

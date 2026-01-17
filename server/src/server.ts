@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
+dotenv.config(); // Load env vars before other imports
+
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import app from './app';
-
-dotenv.config();
 
 const PORT = process.env.PORT || 3001;
 

@@ -1,0 +1,4 @@
+{
+  "message": "Failed to send PayPal invoice",
+  "stack": "Error: Failed to send PayPal invoice\n    at sendPayPalInvoiceByKey (/Users/lukebeteag/ServiceTagger/server/src/services/paypalService.ts:140:15)\n    at processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async sendPayPalInvoice (/Users/lukebeteag/ServiceTagger/server/src/controllers/invoiceController.ts:283:9)"
+}

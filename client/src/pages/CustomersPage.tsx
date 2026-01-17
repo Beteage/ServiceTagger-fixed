@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import MainLayout from '../components/MainLayout';
 import { Users, UserPlus, Search, MapPin, Phone, Mail } from 'lucide-react';
 import api from '../api/axios';
+import { toast } from 'sonner';
 
 interface Customer {
     id: string;
@@ -15,6 +16,7 @@ interface Customer {
 const CustomersPage: React.FC = () => {
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -27,11 +29,14 @@ const CustomersPage: React.FC = () => {
     });
 
     const fetchCustomers = async () => {
+        setLoading(true);
+        setError(null);
         try {
             const { data } = await api.get('/customers');
             setCustomers(data);
-        } catch (err) {
+        } catch (err: any) {
             console.error("Failed to fetch customers", err);
+            setError("Failed to fetch customers");
         } finally {
             setLoading(false);
         }
@@ -41,16 +46,21 @@ const CustomersPage: React.FC = () => {
         fetchCustomers();
     }, []);
 
+
+
+    // ... inside component ...
     const handleCreateCustomer = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             await api.post('/customers', formData);
             setIsModalOpen(false);
             setFormData({ name: '', address: '', phone: '', email: '' });
-            fetchCustomers(); // Refresh list
-        } catch (err) {
-            alert('Failed to create customer');
+            fetchCustomers();
+            toast.success('Customer created successfully');
+        } catch (err: any) {
+            const msg = err.response?.data?.message || err.message || 'Failed to create customer';
             console.error(err);
+            toast.error(`Failed to create customer: ${msg}`);
         }
     };
 
@@ -92,6 +102,12 @@ const CustomersPage: React.FC = () => {
                 <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                     {loading ? (
                         <div className="text-center py-20 text-slate-500">Loading customers...</div>
+                    ) : error ? (
+                        <div className="text-center py-20">
+                            <div className="text-red-500 font-bold mb-2">Error loading customers</div>
+                            <div className="text-slate-500 mb-4">{error}</div>
+                            <button onClick={fetchCustomers} className="text-brand font-medium hover:underline">Try Again</button>
+                        </div>
                     ) : filteredCustomers.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {filteredCustomers.map((customer) => (
@@ -100,7 +116,29 @@ const CustomersPage: React.FC = () => {
                                         <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-600 font-bold group-hover:bg-brand group-hover:text-white transition-all shadow-sm">
                                             {customer.name.charAt(0).toUpperCase()}
                                         </div>
-                                        <button className="text-xs text-slate-400 hover:text-brand font-bold border border-slate-200 hover:border-brand px-3 py-1 rounded-lg transition-all">View</button>
+                                        <div className="flex gap-2">
+                                            <button className="text-xs text-slate-400 hover:text-brand font-bold border border-slate-200 hover:border-brand px-3 py-1 rounded-lg transition-all">View</button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (confirm(`Delete ${customer.name}? This will delete ALL their jobs and invoices permanently.`)) {
+                                                        api.delete(`/customers/${customer.id}`)
+                                                            .then(() => {
+                                                                toast.success('Customer deleted');
+                                                                fetchCustomers();
+                                                            })
+                                                            .catch(err => {
+                                                                console.error(err);
+                                                                toast.error('Failed to delete customer');
+                                                            });
+                                                    }
+                                                }}
+                                                className="text-xs text-red-300 hover:text-red-500 font-bold border border-slate-200 hover:border-red-200 px-2 py-1 rounded-lg transition-all"
+                                                title="Delete Customer"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
                                     </div>
                                     <h3 className="font-bold text-slate-800 text-lg mb-1 group-hover:text-brand transition-colors">{customer.name}</h3>
 
