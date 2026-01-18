@@ -43,18 +43,11 @@ app.use('/api/webhook', express.raw({ type: 'application/json', verify: (req: an
 app.use(express.json());
 
 // CORS Configuration
-const allowedOrigins = process.env.CLIENT_URL ? [process.env.CLIENT_URL, 'http://localhost:5173'] : ['http://localhost:5173'];
+// CORS Configuration
 app.use(cors({
-    origin: (origin, callback) => {
-        // Allow no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) { // Allow local + configured + vercel preview
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
+    origin: true, // Allow all origins (reflects request origin)
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
 }));
 
 // Basic Health Check
