@@ -93,7 +93,7 @@ app.use('/api/seed', seedRoutes);
 app.use(express.static(path.join(__dirname, '../../client/dist')));
 
 // Catch-all route to serve index.html for any route not handled by API
-app.get('*', (req, res) => {
+app.get(/.*/, (req, res) => {
     res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
 });
 
