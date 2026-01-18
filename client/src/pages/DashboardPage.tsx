@@ -12,7 +12,6 @@ import type { DroppableProvided, DraggableProvided, DropResult } from 'react-bea
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
 import { Calendar, MapPin, MoreHorizontal, FileText } from 'lucide-react';
-import RevenueAlertBanner from '../components/RevenueAlertBanner';
 
 interface Job {
     id: string;
@@ -174,7 +173,6 @@ const DashboardPage: React.FC = () => {
 
     return (
         <MainLayout>
-            <RevenueAlertBanner />
             <div className="p-6 h-full flex flex-col">
                 <div className="flex justify-between items-center mb-6">
                     <div>
