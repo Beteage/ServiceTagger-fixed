@@ -68,7 +68,7 @@ const LoginPage: React.FC = () => {
                 </form>
 
                 <div className="mt-8 pt-6 border-t border-slate-100 mb-4">
-                    <p className="text-center text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Quick Access</p>
+                    <p className="text-center text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Admin</p>
                     <button
                         type="button"
                         onClick={() => {
@@ -87,9 +87,11 @@ const LoginPage: React.FC = () => {
                         }}
                         className="w-full bg-slate-100 text-slate-700 font-semibold py-2 px-4 rounded-lg hover:bg-slate-200 transition-colors text-sm"
                     >
-                        Admin Quick Access
+                        Admin Access
                     </button>
                 </div>
+
+
 
                 <p className="mt-6 text-center text-sm text-slate-500">
                     Don't have an account? <Link to="/register" className="text-brand-dark font-semibold hover:underline">Register</Link>
