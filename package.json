@@ -5,7 +5,7 @@
     "scripts": {
         "postinstall": "cd server && npm ci --prefer-offline && npx prisma generate",
         "build": "cd server && npm install --include=dev && npm run build && cd ../client && npm install && npm run build",
-        "start": "node server/dist/index.js"
+        "start": "node server/dist/server.js"
     },
     "devDependencies": {
         "@vercel/node": "^5.5.16"
