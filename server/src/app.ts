@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import authRoutes from './routes/authRoutes';
@@ -87,5 +88,13 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/pricing', pricingRoutes);
 app.use('/api/upsells', upsellRoutes);
 app.use('/api/seed', seedRoutes);
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../../client/dist')));
+
+// Catch-all route to serve index.html for any route not handled by API
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
+});
 
 export default app;
