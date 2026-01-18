@@ -78,23 +78,33 @@ export const login = async (req: Request, res: Response) => {
 
 export const quickAccess = async (req: Request, res: Response) => {
     const { code } = req.body;
-    console.log('Quick Access attempt with code:', code, 'Type:', typeof code);
+    console.log('Quick Access attempt with code:', code);
 
+    // Hardcoded Access Code
     if (String(code).trim() !== '2252') {
         return res.status(401).json({ message: 'Invalid access code' });
     }
 
     try {
+        // Try to find the existing admin user
         let user = await prisma.user.findUnique({ where: { email: 'hi@hi.com' } });
 
         if (!user) {
-            // Auto-create if doesn't exist
-            const tenant = await prisma.tenant.create({
-                data: { name: 'Demo Tenant' }
-            });
+            console.log('Admin user not found. Creating new admin user...');
+
+            // Check if tenant exists first to avoid duplicates
+            let tenant = await prisma.tenant.findFirst({ where: { name: 'Demo Tenant' } });
+
+            if (!tenant) {
+                console.log('Creating Demo Tenant...');
+                tenant = await prisma.tenant.create({
+                    data: { name: 'Demo Tenant', subscriptionStatus: 'active' }
+                });
+            }
 
             const hashedPassword = await bcrypt.hash('hihihi', 10);
 
+            console.log('Creating Admin User...');
             user = await prisma.user.create({
                 data: {
                     email: 'hi@hi.com',
@@ -103,8 +113,12 @@ export const quickAccess = async (req: Request, res: Response) => {
                     tenantId: tenant.id
                 }
             });
+            console.log('Admin user created successfully.');
+        } else {
+            console.log('Admin user found. Logging in...');
         }
 
+        // Generate Token (Bypass password check because they have the Code)
         const token = jwt.sign(
             { userId: user.id, tenantId: user.tenantId, role: user.role },
             SECRET_KEY,
@@ -112,8 +126,12 @@ export const quickAccess = async (req: Request, res: Response) => {
         );
 
         res.json({ token, user: { id: user.id, email: user.email, role: user.role, tenantId: user.tenantId } });
-    } catch (error) {
-        console.error("Quick access error:", error);
-        res.status(500).json({ message: 'Error granting access', error });
+    } catch (error: any) {
+        console.error("Quick access CRITICAL error:", error);
+        res.status(500).json({
+            message: 'Error granting access. Please show this to support.',
+            error: error.message || String(error),
+            stack: error.stack
+        });
     }
 };
