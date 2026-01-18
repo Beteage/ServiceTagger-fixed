@@ -10,4 +10,5 @@ const router = express_1.default.Router();
 router.use(authMiddleware_1.authenticateToken); // Protect all routes
 router.post('/', customerController_1.createCustomer);
 router.get('/', customerController_1.getCustomers);
+router.delete('/:id', customerController_1.deleteCustomer);
 exports.default = router;

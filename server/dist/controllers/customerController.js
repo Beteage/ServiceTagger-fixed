@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCustomers = exports.createCustomer = void 0;
+exports.deleteCustomer = exports.getCustomers = exports.createCustomer = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createCustomer = async (req, res) => {
@@ -15,14 +15,10 @@ const createCustomer = async (req, res) => {
             data: {
                 tenantId: tenantId,
                 name,
-                // email, // Note: Email not in schema yet based on previous view, but assuming standard fields. Checking schema...
-                // Schema checks: name, address, phone, lat, lng, tenantId. No email in Customer schema based on previous `view_file`.
-                // I will remove email from data if not in schema.
+                email,
                 address,
                 phone,
-                // @ts-ignore: Lat/Lng added in recent migration, types might be lagging in IDE check
                 lat,
-                // @ts-ignore
                 lng
             },
         });
@@ -46,3 +42,32 @@ const getCustomers = async (req, res) => {
     }
 };
 exports.getCustomers = getCustomers;
+const deleteCustomer = async (req, res) => {
+    const { id } = req.params;
+    const tenantId = req.user?.tenantId;
+    try {
+        // Enforce tenant isolation
+        const customer = await prisma.customer.findFirst({
+            where: { id, tenantId: tenantId }
+        });
+        if (!customer) {
+            return res.status(404).json({ message: 'Customer not found' });
+        }
+        // Cascading delete
+        // 1. Delete Invoices linked to Jobs linked to this Customer
+        await prisma.invoiceItem.deleteMany({ where: { invoice: { job: { customerId: id } } } }); // Deepest level first
+        await prisma.invoice.deleteMany({ where: { job: { customerId: id } } });
+        // 2. Delete Jobs
+        await prisma.job.deleteMany({ where: { customerId: id } });
+        // 3. Delete Assets
+        await prisma.asset.deleteMany({ where: { customerId: id } });
+        // 4. Delete Customer
+        await prisma.customer.delete({ where: { id } });
+        res.json({ message: 'Customer and related data deleted successfully' });
+    }
+    catch (error) {
+        console.error('Delete customer error:', error);
+        res.status(500).json({ message: 'Error deleting customer', error });
+    }
+};
+exports.deleteCustomer = deleteCustomer;

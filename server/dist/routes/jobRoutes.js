@@ -12,5 +12,8 @@ const router = express_1.default.Router();
 router.use(authMiddleware_1.authenticateToken);
 router.post('/', (0, validate_1.validate)(jobSchemas_1.createJobSchema), jobController_1.createJob);
 router.get('/', jobController_1.getJobs);
+router.get('/:id', jobController_1.getJobById);
+router.put('/:id', jobController_1.updateJob);
+router.delete('/:id', jobController_1.deleteJob);
 router.patch('/:id/status', jobController_1.updateJobStatus);
 exports.default = router;

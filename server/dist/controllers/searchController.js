@@ -8,13 +8,14 @@ const search = async (req, res) => {
     if (!q || typeof q !== 'string' || q.length < 2) {
         return res.json([]);
     }
+    console.log(`[Search] Request for: '${q}'`);
     const query = q.toLowerCase();
     try {
         // Search Customers and Assets in parallel
         const customers = await prisma.customer.findMany({
             where: {
                 OR: [
-                    { name: { contains: query } }, // Case insensitive usually depends on DB collation
+                    { name: { contains: query } },
                     { phone: { contains: query } },
                     { address: { contains: query } },
                 ]

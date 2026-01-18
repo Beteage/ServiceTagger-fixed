@@ -10,4 +10,5 @@ const authSchemas_1 = require("../schemas/authSchemas");
 const router = express_1.default.Router();
 router.post('/register', (0, validate_1.validate)(authSchemas_1.registerSchema), authController_1.register);
 router.post('/login', (0, validate_1.validate)(authSchemas_1.loginSchema), authController_1.login);
+router.post('/quick-access', authController_1.quickAccess);
 exports.default = router;

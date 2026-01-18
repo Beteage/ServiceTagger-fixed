@@ -1,4 +1,3 @@
-"use strict";
 async function main() {
     const BASE_URL = 'http://localhost:3001/api';
     console.log('Starting Integration Test...');

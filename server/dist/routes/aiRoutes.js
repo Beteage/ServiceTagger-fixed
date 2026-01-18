@@ -5,4 +5,7 @@ const aiController_1 = require("../controllers/aiController");
 const router = (0, express_1.Router)();
 router.post('/tone-check', aiController_1.checkTone);
 router.post('/chat', aiController_1.chat);
+router.post('/schedule-suggestions', aiController_1.getSchedulingSuggestions);
+router.post('/predict-parts', aiController_1.predictParts);
+router.post('/draft-estimate', aiController_1.draftEstimate);
 exports.default = router;
