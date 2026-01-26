@@ -9,7 +9,12 @@ const SECRET_KEY = process.env.JWT_SECRET || 'supersecretkey';
 
 // Register: Don't login yet, require payment first
 export const register = async (req: Request, res: Response) => {
-    const { businessName, email, password } = req.body;
+    const { businessName, email, password, inviteCode } = req.body;
+
+    // Check Invitation Code
+    if (inviteCode !== '3036') {
+        return res.status(403).json({ message: 'Invalid invitation code. Registration is currently by invitation only.' });
+    }
 
     try {
         // 0. Check if user already exists

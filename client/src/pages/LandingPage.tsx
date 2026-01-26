@@ -62,11 +62,12 @@ const LandingPage = () => {
                     </div>
 
                     <h1 className="text-5xl sm:text-7xl font-bold tracking-tight mb-8 leading-tight max-w-5xl mx-auto text-[#0b1221]">
-                        Modern field service software for <span className="text-blue-600">HVAC contractors.</span>
+                        Modern field service software for HVAC contractors.
                     </h1>
 
                     <p className="max-w-3xl mx-auto text-lg sm:text-2xl text-gray-600 mb-10 leading-relaxed font-light">
-                        Built from the ground up for small to mid-size teams who want powerful tools without enterprise-level complexity or cost. Deploy in days, not months.
+                        Built from the ground up for small to mid-size HVAC contractors who want modern software without enterprise-level complexity or cost. <br className="hidden sm:block" />
+                        <span className="font-medium text-gray-900">Currently in alpha with select partners.</span> Deploy in days, not months.
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-24">
@@ -104,26 +105,29 @@ const LandingPage = () => {
                     </div>
 
                     {/* Alpha Callout Section */}
-                    <div className="max-w-4xl mx-auto bg-blue-50 border border-blue-100 rounded-lg p-6 mb-16 text-center shadow-sm">
-                        <div className="flex items-center justify-center gap-2 text-blue-800 font-bold mb-3 uppercase tracking-wide text-sm">
-                            <AlertTriangle className="w-4 h-4" /> Currently in Private Alpha
+                    <div className="max-w-4xl mx-auto bg-blue-50 border border-blue-100 rounded-lg p-8 mb-16 text-center shadow-sm">
+                        <div className="flex items-center justify-center gap-2 text-blue-800 font-bold mb-4 uppercase tracking-wide text-sm">
+                            <AlertTriangle className="w-5 h-5" /> Alpha Software Notice
                         </div>
-                        <p className="text-gray-700 leading-relaxed mb-4">
-                            ServiceTagger is functional, fast, and production-ready for early partners. We're actively building new features weekly based on direct feedback from HVAC operators.
+                        <p className="text-gray-700 text-lg leading-relaxed mb-6 max-w-2xl mx-auto">
+                            ServiceTagger is currently in private alpha. The product is functional and fast, but actively evolving based on partner feedback.
                         </p>
-                        <div className="text-sm font-medium text-blue-900 bg-blue-100 inline-block px-3 py-1 rounded">
-                            Founding partner spots: 7 of 10 available
+                        <p className="text-gray-600 mb-6 max-w-2xl mx-auto italic">
+                            If you're looking for a fully mature platform, check back in 6 months. If you want to help shape the future of HVAC software and get priority support, now is the perfect time to join.
+                        </p>
+                        <div className="text-sm font-bold text-blue-900 bg-blue-100 inline-block px-4 py-2 rounded-full">
+                            Spots available: 7 of 10 founding partners
                         </div>
                     </div>
-
-                    {/* Trust Badges (No Customers) */}
-                    <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-60 grayscale pb-4">
-                        <div className="flex items-center gap-2 font-bold text-gray-500"><ShieldCheck className="w-5 h-5" /> Bank-Level Encryption</div>
-                        <div className="flex items-center gap-2 font-bold text-gray-500"><Zap className="w-5 h-5" /> 99.9% Uptime</div>
-                        <div className="flex items-center gap-2 font-bold text-gray-500"><Users className="w-5 h-5" /> Built in Orange County, CA</div>
-                    </div>
-
                 </div>
+
+                {/* Trust Badges (No Customers) */}
+                <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-60 grayscale pb-4">
+                    <div className="flex items-center gap-2 font-bold text-gray-500"><ShieldCheck className="w-5 h-5" /> Bank-Level Encryption</div>
+                    <div className="flex items-center gap-2 font-bold text-gray-500"><Zap className="w-5 h-5" /> 99.9% Uptime</div>
+                    <div className="flex items-center gap-2 font-bold text-gray-500"><Users className="w-5 h-5" /> Built in Orange County, CA</div>
+                </div>
+
             </div>
 
             {/* Comparison Section */}
@@ -231,16 +235,20 @@ const LandingPage = () => {
                             We are hand-selecting 10 HVAC companies to help shape the future of ServiceTagger. This isn't just "early access"—it's a partnership.
                         </p>
 
-                        <div className="grid sm:grid-cols-2 gap-6 mb-10">
+                        <h3 className="text-xl font-bold text-white mb-4">What "Alpha" Means for You:</h3>
+
+                        <div className="grid sm:grid-cols-2 gap-y-4 gap-x-8 mb-10">
                             {[
-                                "Lifetime discounted pricing",
-                                "Direct roadmap influence",
-                                "White-glove onboarding",
-                                "First access to new features"
-                            ].map((benefit, i) => (
-                                <div key={i} className="flex items-center gap-3">
-                                    <div className="bg-green-500/20 p-1 rounded-full"><Check className="w-4 h-4 text-green-400" /></div>
-                                    <span className="font-medium text-white">{benefit}</span>
+                                { text: "The product works and is production-ready", icon: Check, color: "text-green-400", bg: "bg-green-500/20" },
+                                { text: "New features ship weekly based on feedback", icon: Check, color: "text-green-400", bg: "bg-green-500/20" },
+                                { text: "Bugs fixed within 24 hours (founder direct)", icon: Check, color: "text-green-400", bg: "bg-green-500/20" },
+                                { text: "Lifetime discounted pricing", icon: Check, color: "text-green-400", bg: "bg-green-500/20" },
+                                { text: "Expect UI changes and feature iterations", icon: AlertTriangle, color: "text-yellow-400", bg: "bg-yellow-500/20" },
+                                { text: "Not all features are complete yet", icon: AlertTriangle, color: "text-yellow-400", bg: "bg-yellow-500/20" },
+                            ].map((item, i) => (
+                                <div key={i} className="flex items-start gap-3">
+                                    <div className={`${item.bg} p-1 rounded-full mt-0.5`}><item.icon className={`w-4 h-4 ${item.color}`} /></div>
+                                    <span className="text-gray-300 text-sm">{item.text}</span>
                                 </div>
                             ))}
                         </div>
@@ -330,7 +338,7 @@ const LandingPage = () => {
                     </div>
                 </div>
             </footer>
-        </div>
+        </div >
     );
 };
 

@@ -9,6 +9,7 @@ const RegisterPage: React.FC = () => {
     const [businessName, setBusinessName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [inviteCode, setInviteCode] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { login } = useAuth();
@@ -16,7 +17,7 @@ const RegisterPage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const { data } = await api.post('/auth/register', { businessName, email, password });
+            const { data } = await api.post('/auth/register', { businessName, email, password, inviteCode });
             if (data.userId) {
                 // Registration successful, payment required
                 navigate(`/complete-signup/${data.userId}`);
@@ -60,6 +61,18 @@ const RegisterPage: React.FC = () => {
                             className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand/20 focus:border-brand outline-none transition-all"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-slate-700 text-sm font-bold mb-2">Invitation Code</label>
+                        <input
+                            type="text"
+                            className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand/20 focus:border-brand outline-none transition-all"
+                            value={inviteCode}
+                            onChange={(e) => setInviteCode(e.target.value)}
+                            placeholder="Required for Alpha Access"
                             required
                         />
                     </div>
