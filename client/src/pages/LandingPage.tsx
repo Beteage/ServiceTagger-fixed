@@ -37,12 +37,10 @@ const LandingPage = () => {
                                 Sign In
                             </Link>
                             <a
-                                href="https://calendly.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
+                                href="mailto:founder@servicetagger.com"
                                 className="bg-[#D32F2F] hover:bg-[#B71C1C] text-white px-5 py-2.5 rounded-md text-sm font-bold transition-all shadow-[0_0_15px_rgba(211,47,47,0.3)] hover:shadow-[0_0_25px_rgba(211,47,47,0.5)] transform hover:-translate-y-0.5"
                             >
-                                Schedule Demo
+                                Email Founder
                             </a>
                         </div>
                     </div>
@@ -72,12 +70,10 @@ const LandingPage = () => {
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-24">
                         <a
-                            href="https://calendly.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            href="mailto:founder@servicetagger.com"
                             className="w-full sm:w-auto px-10 py-4 bg-[#D32F2F] hover:bg-[#B71C1C] text-white rounded-lg font-bold text-lg transition-all shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
                         >
-                            Talk to the Founder
+                            Email the Founder
                         </a>
                         <a
                             href="#how-it-works"
@@ -260,7 +256,7 @@ const LandingPage = () => {
                                 <div className="font-bold text-white">Luke Beteag</div>
                                 <div className="text-sm text-blue-400">Founder, ServiceTagger</div>
                             </div>
-                            <a href="https://calendly.com" target="_blank" className="px-6 py-3 bg-white text-[#0b1221] font-bold rounded-lg hover:bg-gray-100 transition-colors whitespace-nowrap">
+                            <a href="mailto:founder@servicetagger.com" className="px-6 py-3 bg-white text-[#0b1221] font-bold rounded-lg hover:bg-gray-100 transition-colors whitespace-nowrap">
                                 Apply for Partner Program
                             </a>
                         </div>
