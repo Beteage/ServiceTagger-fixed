@@ -12,6 +12,7 @@ import SettingsPage from './pages/SettingsPage';
 import ProfilePage from './pages/ProfilePage';
 import TeamPage from './pages/TeamPage';
 import SchedulePage from './pages/SchedulePage';
+import LandingPage from './pages/LandingPage';
 import { Toaster } from 'sonner';
 
 import CompleteSignupPage from './pages/CompleteSignupPage';
@@ -113,7 +114,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route path="/" element={<LandingPage />} />
         </Routes>
         <Toaster />
       </AuthProvider>
