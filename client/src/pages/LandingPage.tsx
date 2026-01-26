@@ -56,7 +56,7 @@ const LandingPage = () => {
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                         </span>
-                        Private Alpha • Limited founding partner spots available
+                        Very Early Startup - Experimental private alpha
                     </div>
 
                     <h1 className="text-5xl sm:text-7xl font-bold tracking-tight mb-8 leading-tight max-w-5xl mx-auto text-[#0b1221]">
@@ -65,7 +65,7 @@ const LandingPage = () => {
 
                     <p className="max-w-3xl mx-auto text-lg sm:text-2xl text-gray-600 mb-10 leading-relaxed font-light">
                         Built from the ground up for small to mid-size HVAC contractors who want modern software without enterprise-level complexity or cost. <br className="hidden sm:block" />
-                        <span className="font-medium text-gray-900">Currently in alpha with select partners.</span> Deploy in days, not months.
+                        <span className="font-medium text-gray-900">ServiceTagger is in a very early experimental phase and is not ready for general use.</span>
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-24">
@@ -103,16 +103,16 @@ const LandingPage = () => {
                     {/* Alpha Callout Section */}
                     <div className="max-w-4xl mx-auto bg-blue-50 border border-blue-100 rounded-lg p-8 mb-16 text-center shadow-sm">
                         <div className="flex items-center justify-center gap-2 text-blue-800 font-bold mb-4 uppercase tracking-wide text-sm">
-                            <AlertTriangle className="w-5 h-5" /> Alpha Software Notice
+                            <AlertTriangle className="w-5 h-5" /> Super Early Alpha
                         </div>
                         <p className="text-gray-700 text-lg leading-relaxed mb-6 max-w-2xl mx-auto">
-                            ServiceTagger is currently in private alpha. The product is functional and fast, but actively evolving based on partner feedback.
+                            ServiceTagger is <strong>super early</strong>. This is an experimental startup product, still under heavy development. Core pieces work, but lots is missing, rough, or likely to change.
                         </p>
                         <p className="text-gray-600 mb-6 max-w-2xl mx-auto italic">
-                            If you're looking for a fully mature platform, check back in 6 months. If you want to help shape the future of HVAC software and get priority support, now is the perfect time to join.
+                            If you need something stable and fully baked, this is not the right fit yet. If you’re comfortable using unfinished software and giving feedback directly to the founder, we’d love to talk.
                         </p>
-                        <div className="text-sm font-bold text-blue-900 bg-blue-100 inline-block px-4 py-2 rounded-full">
-                            Spots available: 7 of 10 founding partners
+                        <div className="font-bold text-red-600 border border-red-200 bg-red-50 inline-block px-4 py-2 rounded-lg">
+                            Expect bugs, missing features, and occasional downtime while we build this out.
                         </div>
                     </div>
                 </div>
@@ -235,12 +235,12 @@ const LandingPage = () => {
 
                         <div className="grid sm:grid-cols-2 gap-y-4 gap-x-8 mb-10">
                             {[
-                                { text: "The product works and is production-ready", icon: Check, color: "text-green-400", bg: "bg-green-500/20" },
-                                { text: "New features ship weekly based on feedback", icon: Check, color: "text-green-400", bg: "bg-green-500/20" },
-                                { text: "Bugs fixed within 24 hours (founder direct)", icon: Check, color: "text-green-400", bg: "bg-green-500/20" },
-                                { text: "Lifetime discounted pricing", icon: Check, color: "text-green-400", bg: "bg-green-500/20" },
-                                { text: "Expect UI changes and feature iterations", icon: AlertTriangle, color: "text-yellow-400", bg: "bg-yellow-500/20" },
-                                { text: "Not all features are complete yet", icon: AlertTriangle, color: "text-yellow-400", bg: "bg-yellow-500/20" },
+                                { text: "Early-stage startup product, not a finished platform", icon: AlertTriangle, color: "text-blue-400", bg: "bg-blue-500/20" },
+                                { text: "Features and UI may change frequently", icon: AlertTriangle, color: "text-blue-400", bg: "bg-blue-500/20" },
+                                { text: "No guarantees on timelines or stability yet", icon: AlertTriangle, color: "text-blue-400", bg: "bg-blue-500/20" },
+                                { text: "Direct line to the founder for feedback", icon: Check, color: "text-green-400", bg: "bg-green-500/20" },
+                                { text: "Lifetime discounted pricing for early adopters", icon: Check, color: "text-green-400", bg: "bg-green-500/20" },
+                                { text: "Help build the tool you actually want to use", icon: Check, color: "text-green-400", bg: "bg-green-500/20" },
                             ].map((item, i) => (
                                 <div key={i} className="flex items-start gap-3">
                                     <div className={`${item.bg} p-1 rounded-full mt-0.5`}><item.icon className={`w-4 h-4 ${item.color}`} /></div>
