@@ -4,7 +4,7 @@ import logo from '../assets/logo.png';
 import dashboardScreenshot from '../assets/dashboard_screenshot.png';
 import customersScreenshot from '../assets/screenshot_customers.png';
 import scheduleScreenshot from '../assets/screenshot_schedule.png';
-import { Play, CheckCircle2, ArrowRight, ShieldCheck, Zap, Users, Check, Lock, Star, ChevronRight, Phone, Clock, DollarSign } from 'lucide-react';
+import { Play, CheckCircle2, ArrowRight, ShieldCheck, Zap, Users, Check, Lock, Star, ChevronRight, Phone, Clock, DollarSign, AlertTriangle } from 'lucide-react';
 
 const LandingPage = () => {
     // Determine greeting based on time of day
@@ -29,13 +29,10 @@ const LandingPage = () => {
                         </div>
 
                         <div className="flex items-center space-x-4">
-                            <div className="hidden lg:flex items-center gap-2 text-gray-400 text-sm mr-4">
-                                <Phone className="w-4 h-4" />
-                                <span>(949) 555-0123</span>
-                            </div>
                             <Link
                                 to="/login"
                                 className="text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                                title="Sign in to your account"
                             >
                                 Sign In
                             </Link>
@@ -61,15 +58,15 @@ const LandingPage = () => {
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                         </span>
-                        Taking 2 new partners this week
+                        Private Alpha • Limited founding partner spots available
                     </div>
 
                     <h1 className="text-5xl sm:text-7xl font-bold tracking-tight mb-8 leading-tight max-w-5xl mx-auto text-[#0b1221]">
-                        The field service software HVAC operators <span className="text-blue-600">wish existed.</span>
+                        Modern field service software for <span className="text-blue-600">HVAC contractors.</span>
                     </h1>
 
                     <p className="max-w-3xl mx-auto text-lg sm:text-2xl text-gray-600 mb-10 leading-relaxed font-light">
-                        Built from the ground up for small to mid-size HVAC contractors who want modern software without ServiceTitan-level complexity or cost. Deploy in days, not months.
+                        Built from the ground up for small to mid-size teams who want powerful tools without enterprise-level complexity or cost. Deploy in days, not months.
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-24">
@@ -90,7 +87,7 @@ const LandingPage = () => {
                     </div>
 
                     {/* Main Dashboard Screenshot */}
-                    <div className="relative max-w-6xl mx-auto rounded-xl shadow-2xl border border-gray-200 overflow-hidden group">
+                    <div className="relative max-w-6xl mx-auto rounded-xl shadow-2xl border border-gray-200 overflow-hidden group mb-16">
                         <div className="h-8 bg-gray-100 border-b border-gray-200 flex items-center px-4 gap-2">
                             <div className="flex gap-1.5">
                                 <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
@@ -106,8 +103,21 @@ const LandingPage = () => {
                         />
                     </div>
 
+                    {/* Alpha Callout Section */}
+                    <div className="max-w-4xl mx-auto bg-blue-50 border border-blue-100 rounded-lg p-6 mb-16 text-center shadow-sm">
+                        <div className="flex items-center justify-center gap-2 text-blue-800 font-bold mb-3 uppercase tracking-wide text-sm">
+                            <AlertTriangle className="w-4 h-4" /> Currently in Private Alpha
+                        </div>
+                        <p className="text-gray-700 leading-relaxed mb-4">
+                            ServiceTagger is functional, fast, and production-ready for early partners. We're actively building new features weekly based on direct feedback from HVAC operators.
+                        </p>
+                        <div className="text-sm font-medium text-blue-900 bg-blue-100 inline-block px-3 py-1 rounded">
+                            Founding partner spots: 7 of 10 available
+                        </div>
+                    </div>
+
                     {/* Trust Badges (No Customers) */}
-                    <div className="mt-16 flex flex-wrap justify-center gap-8 md:gap-16 opacity-60 grayscale">
+                    <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-60 grayscale pb-4">
                         <div className="flex items-center gap-2 font-bold text-gray-500"><ShieldCheck className="w-5 h-5" /> Bank-Level Encryption</div>
                         <div className="flex items-center gap-2 font-bold text-gray-500"><Zap className="w-5 h-5" /> 99.9% Uptime</div>
                         <div className="flex items-center gap-2 font-bold text-gray-500"><Users className="w-5 h-5" /> Built in Orange County, CA</div>
@@ -120,14 +130,14 @@ const LandingPage = () => {
             <div className="py-24 bg-[#0b1221]" id="comparison">
                 <div className="max-w-4xl mx-auto px-4">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold mb-4">Built for operators tired of overpaying</h2>
+                        <h2 className="text-3xl font-bold mb-4">Transparent pricing for modern teams</h2>
                         <p className="text-gray-400">Stop paying for features you never use.</p>
                     </div>
 
                     <div className="bg-[#0F1623] border border-white/10 rounded-2xl overflow-hidden">
                         <div className="grid grid-cols-3 p-6 border-b border-white/10 bg-white/5 font-bold text-lg">
                             <div className="text-gray-400">Feature</div>
-                            <div className="text-center text-gray-500 line-through decoration-red-500/50">"The Big Guys"</div>
+                            <div className="text-center text-gray-500">Enterprise Platforms</div>
                             <div className="text-center text-white flex items-center justify-center gap-2">
                                 <img src={logo} alt="ST" className="w-5 h-5 brightness-0 invert" /> ServiceTagger
                             </div>
@@ -238,7 +248,7 @@ const LandingPage = () => {
                         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center gap-6">
                             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-2xl font-bold text-white shrink-0">L</div>
                             <div className="flex-grow text-center md:text-left">
-                                <p className="text-gray-300 italic mb-2">"We built this because we listened to operators, not VCs. I want to build exactly what you need, nothing you don't."</p>
+                                <p className="text-gray-300 italic mb-2">"ServiceTagger exists because HVAC operators told me they were tired of complicated, expensive software. I'm building exactly what small to mid-size teams need—nothing more, nothing less."</p>
                                 <div className="font-bold text-white">Luke Beteag</div>
                                 <div className="text-sm text-blue-400">Founder, ServiceTagger</div>
                             </div>
@@ -281,7 +291,7 @@ const LandingPage = () => {
                                 <span className="font-bold text-white">ServiceTagger</span>
                             </div>
                             <p className="mb-4">Modern field service software for HVAC & Plumbing professionals.</p>
-                            <div className="flex items-center gap-2"><Phone className="w-4 h-4" /> (949) 555-0123</div>
+                            <p className="flex items-center gap-2"><span className="text-white">Email:</span> founder@servicetagger.com</p>
                         </div>
 
                         <div>
