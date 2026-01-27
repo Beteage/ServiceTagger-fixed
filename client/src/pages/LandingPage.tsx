@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import dashboardScreenshot from '../assets/dashboard_screenshot.png';
-import customersScreenshot from '../assets/screenshot_customers.png';
 import scheduleScreenshot from '../assets/screenshot_schedule.png';
-import { CheckCircle2, ArrowRight, ShieldCheck, Zap, Users, Check, AlertTriangle, Clock, Menu, X, ChevronRight } from 'lucide-react';
+import customersScreenshot from '../assets/screenshot_customers.png';
+import { CheckCircle2, Menu, X, ShieldCheck, Zap, Users, ArrowRight, Star, Sparkles } from 'lucide-react';
 
 const LandingPage = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
-        <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-blue-100">
+        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-sky-200">
             {/* Navigation */}
             <nav className="fixed w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -18,29 +18,31 @@ const LandingPage = () => {
                         {/* Logo */}
                         <Link to="/" className="flex-shrink-0 flex items-center gap-2 group">
                             <img src={logo} alt="ServiceTagger" className="h-8 w-auto transition-transform group-hover:scale-105" />
-                            <span className="font-bold text-xl tracking-tight text-slate-900">ServiceTagger</span>
+                            <span className="font-extrabold text-2xl tracking-tighter text-slate-900">
+                                Service<span className="text-sky-500">Tagger</span>
+                            </span>
                         </Link>
 
                         {/* Desktop Nav */}
-                        <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
-                            <a href="#how-it-works" className="hover:text-blue-600 transition-colors">How It Works</a>
-                            <a href="#pricing" className="hover:text-blue-600 transition-colors">Pricing</a>
-                            <a href="#program" className="hover:text-blue-600 transition-colors">Partner Program</a>
+                        <div className="hidden md:flex items-center space-x-8 text-sm font-semibold text-slate-600">
+                            <a href="#features" className="hover:text-sky-500 transition-colors">Features</a>
+                            <a href="#how-it-works" className="hover:text-sky-500 transition-colors">How It Works</a>
+                            <a href="#reviews" className="hover:text-sky-500 transition-colors">Reviews</a>
                         </div>
 
                         {/* Desktop Actions */}
                         <div className="hidden md:flex items-center space-x-4">
                             <Link
                                 to="/login"
-                                className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+                                className="text-sm font-bold text-slate-900 hover:text-sky-500 transition-colors"
                             >
                                 Sign In
                             </Link>
                             <a
-                                href="#contact"
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md shadow-blue-600/20 hover:shadow-lg hover:shadow-blue-600/30 transform hover:-translate-y-0.5"
+                                href="mailto:founder@servicetagger.com?subject=Early Access Request"
+                                className="bg-black hover:bg-slate-800 text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                             >
-                                Apply for Partner Access
+                                Email Founder
                             </a>
                         </div>
 
@@ -48,7 +50,7 @@ const LandingPage = () => {
                         <div className="md:hidden flex items-center">
                             <button
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                className="text-slate-600 hover:text-slate-900 focus:outline-none"
+                                className="text-slate-900 focus:outline-none"
                             >
                                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                             </button>
@@ -59,80 +61,87 @@ const LandingPage = () => {
                 {/* Mobile Menu */}
                 {mobileMenuOpen && (
                     <div className="md:hidden bg-white border-b border-slate-100 px-4 py-4 space-y-4 shadow-lg">
-                        <a href="#how-it-works" className="block text-slate-600 font-medium" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
-                        <a href="#pricing" className="block text-slate-600 font-medium" onClick={() => setMobileMenuOpen(false)}>Pricing</a>
-                        <a href="#program" className="block text-slate-600 font-medium" onClick={() => setMobileMenuOpen(false)}>Partner Program</a>
-                        <div className="pt-4 border-t border-slate-100 flex flex-col gap-3">
-                            <Link to="/login" className="text-center text-slate-600 font-medium py-2">Sign In</Link>
-                            <a href="#contact" className="bg-blue-600 text-white text-center py-3 rounded-lg font-bold" onClick={() => setMobileMenuOpen(false)}>Apply for Partner Access</a>
-                        </div>
+                        <a href="#features" className="block text-slate-600 font-bold" onClick={() => setMobileMenuOpen(false)}>Features</a>
+                        <a href="#how-it-works" className="block text-slate-600 font-bold" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
+                        <Link to="/login" className="block text-slate-600 font-bold">Sign In</Link>
+                        <a href="mailto:founder@servicetagger.com?subject=Early Access Request" className="block bg-black text-white text-center py-3 rounded-full font-bold" onClick={() => setMobileMenuOpen(false)}>Email Founder for Access</a>
                     </div>
                 )}
             </nav>
 
             {/* Hero Section */}
-            <header className="relative pt-32 pb-20 sm:pt-40 sm:pb-32 overflow-hidden bg-slate-50 border-b border-slate-200">
+            <header className="relative pt-32 pb-20 sm:pt-40 sm:pb-32 overflow-hidden bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
                         {/* Hero Text */}
-                        <div className="text-center lg:text-left">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 border border-blue-200 text-xs font-bold text-blue-700 mb-8 uppercase tracking-wide">
+                        <div className="text-center lg:text-left z-10">
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-50 border border-sky-100 text-xs font-bold text-sky-600 mb-8 uppercase tracking-wide">
                                 <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
                                 </span>
-                                Private Alpha
+                                Founder‑led private alpha for HVAC teams
                             </div>
 
-                            <h1 className="text-5xl sm:text-6xl font-bold tracking-tight text-slate-900 mb-6 leading-[1.1]">
-                                Modern field service software for <span className="text-blue-600">HVAC contractors.</span>
+                            <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tight text-slate-900 mb-8 leading-[1.05]">
+                                Proof that powerful field service software doesn't need to be <span className="text-sky-500">expensive or complicated.</span>
                             </h1>
 
-                            <p className="text-lg sm:text-xl text-slate-600 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                                Dispatch faster, keep customers informed, and get paid on time—without enterprise bloat or 6‑month implementations.
+                            <p className="text-lg sm:text-xl text-slate-600 mb-6 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-medium">
+                                ServiceTagger is a streamlined field service platform designed to bring intelligent organization to HVAC operations.
+                            </p>
+
+                            <p className="text-base text-slate-500 mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                                We’re in early development and working closely with a small group of HVAC contractors to shape our fine‑tuned, RAG‑powered AI platform for real‑world service work. If you’re open to some bugs, direct access to the founder, and helping train the system on real jobs, we’d love to partner with you.
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-                                <a
-                                    href="#contact"
-                                    className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-lg transition-all shadow-lg shadow-blue-600/20 hover:shadow-xl hover:shadow-blue-600/30 transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                                <Link
+                                    to="/register"
+                                    className="w-full sm:w-auto px-10 py-5 bg-sky-500 hover:bg-sky-400 text-white rounded-full font-bold text-lg transition-all shadow-xl shadow-sky-500/30 hover:shadow-2xl hover:shadow-sky-500/40 transform hover:-translate-y-1 flex items-center justify-center gap-2"
                                 >
-                                    Apply for Partner Access
-                                </a>
+                                    Apply for early access
+                                </Link>
                                 <a
-                                    href="#how-it-works"
-                                    className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 hover:border-slate-300"
+                                    href="mailto:founder@servicetagger.com"
+                                    className="w-full sm:w-auto px-10 py-5 text-slate-600 hover:text-slate-900 font-bold text-lg transition-all flex items-center justify-center gap-2 underline decoration-slate-300 hover:decoration-slate-900 underline-offset-4"
                                 >
-                                    See How It Works
+                                    Talk directly with the founder
                                 </a>
                             </div>
 
-                            <div className="mt-8 flex items-center justify-center lg:justify-start gap-6 text-sm font-medium text-slate-500">
+                            <div className="mt-10 flex items-center justify-center lg:justify-start gap-8 text-sm font-bold text-slate-500">
                                 <div className="flex items-center gap-2">
-                                    <ShieldCheck className="w-4 h-4 text-slate-400" />
-                                    Bank-Level Encryption
+                                    <ShieldCheck className="w-5 h-5 text-sky-500" />
+                                    <span>Built for Industry Pros</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Zap className="w-4 h-4 text-slate-400" />
-                                    99.9% Uptime
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Users className="w-4 h-4 text-slate-400" />
-                                    Built in Orange County, CA
+                                    <Zap className="w-5 h-5 text-sky-500" />
+                                    <span>Quick Setup</span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Hero Image */}
+                        {/* Hero Image - Stock Photo */}
                         <div className="relative">
-                            <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-purple-600/20 rounded-2xl blur-3xl transform rotate-3 scale-95 opacity-50" />
-                            <div className="relative rounded-xl border border-slate-200 bg-white shadow-2xl overflow-hidden p-2">
-                                <div className="rounded-lg bg-slate-100 overflow-hidden border border-slate-100">
-                                    <img
-                                        src={dashboardScreenshot}
-                                        alt="ServiceTagger Dashboard"
-                                        className="w-full h-auto"
-                                    />
+                            <div className="absolute -inset-4 bg-sky-500/10 rounded-full blur-3xl transform rotate-3 opacity-60 pointer-events-none" />
+                            <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white transform rotate-1 hover:rotate-0 transition-transform duration-700">
+                                <img
+                                    src="/hero-stock.jpg"
+                                    alt="HVAC Technician using ServiceTagger"
+                                    className="w-full h-auto object-cover"
+                                />
+                                {/* Overlay Card Effect similar to reference */}
+                                <div className="absolute bottom-8 left-8 right-8 bg-white/95 backdrop-blur-sm p-6 rounded-xl border border-white/50 shadow-lg hidden sm:block">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                            <CheckCircle2 className="w-6 h-6 text-green-600" />
+                                        </div>
+                                        <div>
+                                            <div className="font-bold text-slate-900 text-lg">Job Completed</div>
+                                            <div className="text-slate-500 text-sm">Tech notified • Customer billed</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -140,260 +149,265 @@ const LandingPage = () => {
                 </div>
             </header>
 
-            {/* How It Works Section */}
-            <section id="how-it-works" className="py-24 bg-white">
+            {/* Logo Cloud */}
+            <section className="py-12 bg-slate-50 border-y border-slate-100">
+                <div className="max-w-7xl mx-auto px-4 text-center">
+                    <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Currently partnering with a small group of HVAC contractors in private alpha.</p>
+                </div>
+            </section>
+
+            {/* Features Section */}
+            <section id="features" className="py-24 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-20">
-                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">See it in action</h2>
-                        <p className="text-lg text-slate-600">No smoke and mirrors. Just working software designed for speed.</p>
+                        <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 mb-6">Focused on the <span className="text-sky-500">essentials</span> to run your HVAC jobs.</h2>
+                        <p className="text-xl text-slate-600 font-medium">From the office to the field, keep your entire team in sync.</p>
                     </div>
 
-                    <div className="space-y-24">
-                        {/* Feature 1 */}
-                        <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
-                            <div className="order-2 md:order-1">
-                                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-6">
-                                    <Clock className="w-6 h-6" />
+                    <div className="space-y-40">
+                        {/* Feature 1: Scheduling */}
+                        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
+                            <div className="flex-1 order-2 lg:order-1">
+                                <div className="w-14 h-14 bg-sky-100 rounded-2xl flex items-center justify-center text-sky-600 mb-8">
+                                    <Star className="w-7 h-7" fill="currentColor" />
                                 </div>
-                                <h3 className="text-2xl font-bold text-slate-900 mb-4">Drag-and-Drop Scheduling</h3>
-                                <p className="text-slate-600 text-lg leading-relaxed mb-6">
-                                    Assign jobs in seconds. See where your techs are, update statuses instantly, and keep customers in the loop with automated SMS updates.
+                                <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-6">Schedule & Dispatch</h3>
+                                <p className="text-slate-600 text-xl leading-relaxed mb-8">
+                                    Drag and drop jobs to assign them to the right tech. Visualize your day, week, or month at a glance. Send instant notifications so your team knows exactly where to go.
                                 </p>
-                                <div className="bg-slate-50 border border-slate-100 rounded-lg p-4">
-                                    <div className="flex items-start gap-3">
-                                        <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5" />
-                                        <div>
-                                            <div className="font-bold text-slate-900">Reduce Admin Time</div>
-                                            <div className="text-sm text-slate-500">Dispatchers save ~15 hours/week on average.</div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <ul className="space-y-4">
+                                    {[
+                                        "Visual Drag-and-Drop Calendar",
+                                        "Instant Technician Notifications",
+                                        "Route Optimization",
+                                        "Job Status Tracking"
+                                    ].map((item, i) => (
+                                        <li key={i} className="flex items-center gap-3 text-slate-800 font-bold text-lg">
+                                            <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                                                <CheckCircle2 className="w-4 h-4 text-green-600" />
+                                            </div>
+                                            {item}
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
-                            <div className="order-1 md:order-2">
-                                <div className="rounded-xl border border-slate-200 bg-white shadow-xl overflow-hidden p-2 transform rotate-1 hover:rotate-0 transition-transform duration-500">
-                                    <img src={scheduleScreenshot} alt="Scheduling Interface" className="w-full rounded-lg shadow-sm" />
+                            <div className="flex-1 lg:flex-[1.2] order-1 lg:order-2">
+                                <div className="rounded-3xl p-4 bg-slate-100 border border-slate-200 shadow-2xl">
+                                    <img src={scheduleScreenshot} alt="Scheduling" className="w-full h-auto rounded-2xl border border-slate-300/50 shadow-sm" />
                                 </div>
                             </div>
                         </div>
 
-                        {/* Feature 2 */}
-                        <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
-                            <div>
-                                <div className="rounded-xl border border-slate-200 bg-white shadow-xl overflow-hidden p-2 transform -rotate-1 hover:rotate-0 transition-transform duration-500">
-                                    <img src={customersScreenshot} alt="Customer CRM" className="w-full rounded-lg shadow-sm" />
+                        {/* Feature 2: Customer Management */}
+                        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
+                            <div className="flex-1 lg:flex-[1.2]">
+                                <div className="rounded-3xl p-4 bg-slate-100 border border-slate-200 shadow-2xl">
+                                    <img src={customersScreenshot} alt="Customer Management" className="w-full h-auto rounded-2xl border border-slate-300/50 shadow-sm" />
                                 </div>
                             </div>
-                            <div>
-                                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-6">
-                                    <Users className="w-6 h-6" />
+                            <div className="flex-1">
+                                <div className="w-14 h-14 bg-sky-100 rounded-2xl flex items-center justify-center text-sky-600 mb-8">
+                                    <Users className="w-7 h-7" />
                                 </div>
-                                <h3 className="text-2xl font-bold text-slate-900 mb-4">Simple Customer Management</h3>
-                                <p className="text-slate-600 text-lg leading-relaxed mb-6">
-                                    Track every interaction, invoice, and equipment detail. Search by name, address, or phone number and get the full history in one click.
+                                <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-6">Customer Management</h3>
+                                <p className="text-slate-600 text-xl leading-relaxed mb-8">
+                                    All your customer data in one place. Service history, equipment details, and communication logs. Delight your customers with personalized service every time.
                                 </p>
-                                <div className="bg-slate-50 border border-slate-100 rounded-lg p-4">
-                                    <div className="flex items-start gap-3">
-                                        <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5" />
-                                        <div>
-                                            <div className="font-bold text-slate-900">Never Lose History</div>
-                                            <div className="text-sm text-slate-500">Full equipment & service timeline for every address.</div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <ul className="space-y-4">
+                                    {[
+                                        "Complete Service History",
+                                        "Equipment Tracking",
+                                        "One-Click Communication",
+                                        "Customer Portal"
+                                    ].map((item, i) => (
+                                        <li key={i} className="flex items-center gap-3 text-slate-800 font-bold text-lg">
+                                            <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                                                <CheckCircle2 className="w-4 h-4 text-green-600" />
+                                            </div>
+                                            {item}
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Pricing / Comparison Section */}
-            <section id="pricing" className="py-24 bg-slate-50 border-y border-slate-200">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold text-slate-900 mb-4">Simple pricing, powerful features</h2>
-                        <p className="text-slate-600">Enterprise features without the enterprise price tag.</p>
-                    </div>
+            {/* ServiceTagger Brain Section */}
+            <section className="py-24 bg-black text-white relative overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-800 via-black to-black opacity-40" />
 
-                    <div className="bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
-                        {/* Table Header */}
-                        <div className="grid grid-cols-3 bg-slate-50 border-b border-slate-200">
-                            <div className="p-6 font-bold text-slate-500">Feature</div>
-                            <div className="p-6 font-bold text-slate-900 text-center">Enterprise Platforms</div>
-                            <div className="p-6 font-bold text-blue-600 text-center bg-blue-50/50">ServiceTagger</div>
-                        </div>
-
-                        {/* Table Body */}
-                        <div className="divide-y divide-slate-100">
-                            {[
-                                { label: "Price per tech", their: "$300+/mo", our: "$99/mo" },
-                                { label: "Setup Time", their: "3-6 Months", our: "48 Hours" },
-                                { label: "Training Required", their: "Days", our: "20 Minutes" },
-                                { label: "Contract", their: "Annual Lock-in", our: "Monthly" },
-                                { label: "Support", their: "Ticket Queue", our: "Founder Direct" },
-                            ].map((row, i) => (
-                                <div key={i} className="grid grid-cols-3 hover:bg-slate-50/50 transition-colors">
-                                    <div className="p-5 text-sm font-medium text-slate-600 flex items-center">{row.label}</div>
-                                    <div className="p-5 text-sm font-medium text-slate-500 text-center flex items-center justify-center bg-slate-50/30">{row.their}</div>
-                                    <div className="p-5 text-sm font-bold text-slate-900 text-center flex items-center justify-center bg-blue-50/30">{row.our}</div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Partner Program & Founder Section */}
-            <section id="program" className="py-24 bg-white relative overflow-hidden">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Founder Quote Card */}
-                    <div className="bg-slate-900 rounded-2xl p-12 text-center text-white relative shadow-2xl mb-24 overflow-hidden">
-                        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[100px] pointer-events-none" />
-
-                        <div className="relative z-10 max-w-3xl mx-auto">
-                            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto mb-8 flex items-center justify-center text-2xl font-bold shadow-lg border-4 border-slate-800">L</div>
-                            <p className="text-2xl font-medium leading-relaxed mb-8 italic text-slate-200">
-                                "ServiceTagger exists because HVAC operators told me they were tired of complicated, expensive software. I'm building exactly what small to mid-size teams need—nothing more, nothing less."
-                            </p>
-                            <div>
-                                <div className="font-bold text-lg">Luke Beteag</div>
-                                <div className="text-blue-400 font-medium">Founder, ServiceTagger</div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+                        <div className="flex-1">
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/50 border border-slate-700 text-xs font-bold text-sky-400 mb-8 uppercase tracking-wide">
+                                <Sparkles className="w-3 h-3" />
+                                <span>New Field Intelligence</span>
                             </div>
-                        </div>
-                    </div>
 
-                    {/* Partner Program Info */}
-                    <div className="grid md:grid-cols-2 gap-16">
-                        <div>
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-100 border border-yellow-200 text-xs font-bold text-yellow-800 mb-6 uppercase tracking-wide">
-                                Founding Partner Program
-                            </div>
-                            <h2 className="text-3xl font-bold text-slate-900 mb-6">Join as a Founding Partner</h2>
-                            <p className="text-slate-600 text-lg mb-8 leading-relaxed">
-                                We are hand-selecting 10 HVAC companies to help shape the future of ServiceTagger. This isn't just "early access"—it's a partnership.
+                            <h2 className="text-4xl sm:text-5xl font-black text-white mb-6 tracking-tight">
+                                Meet <span className="text-sky-500">ServiceTagger Brain</span>
+                            </h2>
+
+                            <p className="text-xl text-slate-400 leading-relaxed mb-8">
+                                A fine‑tuned, RAG‑powered AI that actually understands your business. It learns from your job history to organize workflows, answer questions, and automate dispatch.
                             </p>
 
-                            <div className="space-y-4">
+                            <ul className="space-y-4 mb-10">
                                 {[
-                                    { text: "Production-ready, shipping weekly", icon: Check },
-                                    { text: "Bugs fixed within 24 hours", icon: Check },
-                                    { text: "Lifetime discounted pricing", icon: Check },
-                                    { text: "Direct influence on product roadmap", icon: Check },
+                                    "Trained on your real-world job data",
+                                    "Automates scheduling & dispatch logic",
+                                    "Zero-setup: learns as you work",
+                                    "Field intelligence, not just a chatbot"
                                 ].map((item, i) => (
-                                    <div key={i} className="flex items-center gap-3">
-                                        <div className="bg-green-100 p-1 rounded-full"><Check className="w-4 h-4 text-green-600" /></div>
-                                        <span className="font-medium text-slate-700">{item.text}</span>
-                                    </div>
+                                    <li key={i} className="flex items-center gap-3 text-slate-300 font-medium">
+                                        <div className="w-6 h-6 rounded-full bg-sky-500/20 flex items-center justify-center shrink-0">
+                                            <CheckCircle2 className="w-4 h-4 text-sky-400" />
+                                        </div>
+                                        {item}
+                                    </li>
                                 ))}
+                            </ul>
+
+                            <div className="p-4 bg-slate-900/50 rounded-2xl border border-slate-800 shadow-xl">
+                                <div className="flex items-start gap-4">
+                                    <div>
+                                        <div className="text-sm font-bold text-slate-300 mb-1">Human-level Context</div>
+                                        <div className="text-xs text-slate-500 leading-relaxed">
+                                            "Hey Brain, moving the Smith job to Tuesday—drag and drop it for me." <br />
+                                            <span className="text-sky-500">Done. I've also notified the technician.</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="bg-slate-50 rounded-xl p-8 border border-slate-200">
-                            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">Development Velocity</h3>
-                            <div className="space-y-0 relative">
-                                <div className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-slate-200" />
-                                {[
-                                    { date: "Jan 24", title: "Drag-and-Drop Dispatch", tag: "New" },
-                                    { date: "Jan 18", title: "Weekly Schedule View", tag: "New" },
-                                    { date: "Jan 15", title: "Equipment Photo AI", tag: "AI" },
-                                    { date: "Jan 08", title: "Mobile App Beta", tag: "Beta" },
-                                ].map((update, i) => (
-                                    <div key={i} className="flex gap-6 relative pb-8 last:pb-0">
-                                        <div className="w-4 h-4 rounded-full bg-blue-600 border-4 border-white shadow-sm z-10 shrink-0" />
-                                        <div>
-                                            <div className="text-xs font-bold text-slate-400 mb-1">{update.date}</div>
-                                            <div className="font-bold text-slate-800 text-sm mb-1">{update.title}</div>
-                                            <span className="inline-block px-2 py-0.5 rounded bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-wide border border-blue-100">{update.tag}</span>
-                                        </div>
-                                    </div>
-                                ))}
+                        <div className="flex-1 w-full relative">
+                            <div className="absolute -inset-4 bg-sky-500/20 rounded-3xl blur-3xl opacity-30" />
+                            <div className="relative rounded-2xl border border-slate-800 shadow-2xl overflow-hidden bg-slate-900 group">
+                                <img
+                                    src="/brain-screenshot.png"
+                                    alt="ServiceTagger Brain Dashboard"
+                                    className="w-full h-auto transform transition-transform duration-700 group-hover:scale-[1.02]"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Contact / Application Section */}
-            <section id="contact" className="py-24 bg-slate-900 text-white">
-                <div className="max-w-xl mx-auto px-4 text-center">
-                    <h2 className="text-3xl font-bold mb-4">Request Partner Access</h2>
-                    <p className="text-slate-400 mb-10">
-                        Ready to modernize your operations? Apply to join the alpha.
-                    </p>
-
-                    <div className="bg-white rounded-2xl p-8 text-left shadow-2xl">
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-1">Name</label>
-                                <input type="text" className="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="John Doe" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-1">Company Name</label>
-                                <input type="text" className="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="Acme HVAC" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-1">Email</label>
-                                <input type="email" className="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="john@acme.com" />
-                            </div>
-                            <button
-                                onClick={() => window.location.href = `mailto:founder@servicetagger.com?subject=Partner Access Request&body=I'm interesting in joining the alpha.`}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-lg shadow-lg shadow-blue-600/20 transition-all mt-4"
-                            >
-                                Apply Now
-                            </button>
-                            <p className="text-xs text-center text-slate-400 mt-4">
-                                Clicking "Apply Now" will open your email client.
-                            </p>
-                        </div>
+            {/* How It Works */}
+            <section id="how-it-works" className="py-24 bg-slate-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-6">How it Works</h2>
+                        <p className="text-xl text-slate-600">Three steps to a more organized business.</p>
                     </div>
 
-                    <div className="mt-12 opacity-50">
-                        <div className="flex items-center justify-center gap-2 text-sm text-slate-500 font-medium">
-                            <AlertTriangle className="w-4 h-4" />
-                            <span>7 of 10 founding partner spots remaining</span>
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {[
+                            {
+                                step: "01",
+                                title: "Create & Assign",
+                                desc: "Generate work orders in a single click. Drag and drop to schedule and assign to technicians."
+                            },
+                            {
+                                step: "02",
+                                title: "Dispatch & Track",
+                                desc: "Techs view job details, navigate to sites, and capture payments in app. You track progress in real-time."
+                            },
+                            {
+                                step: "03",
+                                title: "Get Paid Fast",
+                                desc: "Send professional invoices instantly. Collect payments on the spot or online. Seamless accounting sync."
+                            }
+                        ].map((item, i) => (
+                            <div key={i} className="bg-white p-10 rounded-3xl shadow-lg border border-slate-100 relative overflow-hidden group hover:-translate-y-2 transition-transform duration-300">
+                                <div className="absolute top-0 right-0 p-8 opacity-5 font-black text-9xl text-slate-900 group-hover:text-sky-500 transition-colors select-none">
+                                    {item.step}
+                                </div>
+                                <div className="relative z-10">
+                                    <div className="w-12 h-12 bg-sky-500 text-white rounded-xl flex items-center justify-center font-bold text-xl mb-6 shadow-lg shadow-sky-500/30">
+                                        {item.step}
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-slate-900 mb-4">{item.title}</h3>
+                                    <p className="text-slate-600 leading-relaxed font-medium">
+                                        {item.desc}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* CTA Section */}
+            <section className="py-24">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="bg-black rounded-[3rem] p-12 md:p-24 text-center relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-black z-0" />
+                        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-800 via-black to-black opacity-50" />
+                        <div className="relative z-10">
+                            <h2 className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tight">
+                                Ready to grow your business?
+                            </h2>
+                            <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto">
+                                We’re looking for a few more HVAC partners to help shape ServiceTagger during private alpha.
+                            </p>
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                                <a
+                                    href="mailto:founder@servicetagger.com?subject=Early Access Request&body=I'm interested in joining the ServiceTagger alpha."
+                                    className="w-full sm:w-auto px-10 py-5 bg-sky-500 hover:bg-sky-400 text-white rounded-full font-bold text-xl transition-all shadow-xl shadow-sky-900/50 hover:shadow-2xl hover:shadow-sky-500/40 transform hover:-translate-y-1"
+                                >
+                                    Email Founder for Access
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* Footer */}
-            <footer className="bg-white border-t border-slate-200 py-12">
+            <footer className="bg-white border-t border-slate-100 py-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid md:grid-cols-4 gap-8 mb-8">
+                    <div className="grid md:grid-cols-4 gap-12 mb-12">
                         <div className="col-span-1 md:col-span-2">
-                            <div className="flex items-center gap-2 mb-4">
+                            <span className="font-extrabold text-2xl tracking-tighter text-slate-900 flex items-center gap-2 mb-6">
                                 <img src={logo} alt="ServiceTagger" className="h-6 w-auto" />
-                                <span className="font-bold text-slate-900">ServiceTagger</span>
-                            </div>
-                            <p className="text-slate-500 text-sm max-w-xs mb-4">
-                                Modern field service software for HVAC & Plumbing professionals. Built for speed and simplicity.
+                                <span>Service<span className="text-sky-500">Tagger</span></span>
+                            </span>
+                            <p className="text-slate-500 font-medium max-w-xs leading-relaxed">
+                                The modern operating system for field service teams. Built for speed, designed for growth.
                             </p>
-                            <div className="text-sm font-medium text-slate-900">
-                                <a href="mailto:founder@servicetagger.com" className="hover:text-blue-600">founder@servicetagger.com</a>
-                            </div>
                         </div>
 
                         <div>
-                            <h4 className="font-bold text-slate-900 mb-4">Product</h4>
-                            <ul className="space-y-2 text-sm text-slate-600">
-                                <li><a href="#how-it-works" className="hover:text-blue-600">Features</a></li>
-                                <li><a href="#pricing" className="hover:text-blue-600">Pricing</a></li>
-                                <li><a href="#program" className="hover:text-blue-600">Partner Program</a></li>
+                            <h4 className="font-bold text-slate-900 mb-6">Product</h4>
+                            <ul className="space-y-4 text-sm font-medium text-slate-600">
+                                <li><a href="#features" className="hover:text-sky-500 transition-colors">Features</a></li>
+                                <li><a href="#pricing" className="hover:text-sky-500 transition-colors">Pricing</a></li>
+                                <li><a href="/login" className="hover:text-sky-500 transition-colors">Login</a></li>
                             </ul>
                         </div>
 
                         <div>
-                            <h4 className="font-bold text-slate-900 mb-4">Company</h4>
-                            <ul className="space-y-2 text-sm text-slate-600">
-                                <li><a href="#" className="hover:text-blue-600">About</a></li>
-                                <li><a href="#" className="hover:text-blue-600">Privacy Policy</a></li>
-                                <li><a href="#" className="hover:text-blue-600">Terms of Service</a></li>
+                            <h4 className="font-bold text-slate-900 mb-6">Company</h4>
+                            <ul className="space-y-4 text-sm font-medium text-slate-600">
+                                <li><a href="#" className="hover:text-sky-500 transition-colors">About</a></li>
+                                <li><a href="#" className="hover:text-sky-500 transition-colors">Contact</a></li>
+                                <li><a href="#" className="hover:text-sky-500 transition-colors">Privacy</a></li>
                             </ul>
                         </div>
                     </div>
 
-                    <div className="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
+                    <div className="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-bold text-slate-400">
                         <div>© {new Date().getFullYear()} ServiceTagger. All rights reserved.</div>
-                        <div>Lake Forest, CA ☀️</div>
+                        <div className="flex items-center gap-6">
+                            <a href="#" className="hover:text-slate-900 transition-colors">Terms</a>
+                            <a href="#" className="hover:text-slate-900 transition-colors">Privacy</a>
+                        </div>
                     </div>
                 </div>
             </footer>
