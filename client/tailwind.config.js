@@ -20,7 +20,7 @@ export default {
             }
         },
         fontFamily: {
-            sans: ['Inter', 'sans-serif'], // Enforce Inter
+            sans: ['Space Grotesk', 'sans-serif'],
             mono: ['Roboto Mono', 'monospace'], // For financial data
         }
     },
