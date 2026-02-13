@@ -11,45 +11,41 @@ const LandingPage = () => {
 
     return (
         <div className="min-h-screen bg-white text-slate-900 font-sans">
-            {/* Navigation */}
-            <nav className="fixed w-full z-50 bg-white border-b border-slate-200">
+            {/* Navigation — transparent over hero */}
+            <nav className="fixed w-full z-50 bg-black/30 backdrop-blur-sm border-b border-white/10">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
-                        {/* Logo */}
                         <Link to="/" className="flex-shrink-0 flex items-center gap-2">
-                            <img src={logo} alt="ServiceTagger" className="h-7 w-auto" />
-                            <span className="font-bold text-xl tracking-tight text-slate-900">
-                                Service<span className="text-blue-700">Tagger</span>
+                            <img src={logo} alt="ServiceTagger" className="h-7 w-auto brightness-200" />
+                            <span className="font-bold text-xl tracking-tight text-white">
+                                Service<span className="text-blue-400">Tagger</span>
                             </span>
                         </Link>
 
-                        {/* Desktop Nav */}
-                        <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
-                            <a href="#features" className="hover:text-blue-700 transition-colors">Features</a>
-                            <a href="#how-it-works" className="hover:text-blue-700 transition-colors">How It Works</a>
+                        <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-white/80">
+                            <a href="#features" className="hover:text-white transition-colors">Features</a>
+                            <a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a>
                         </div>
 
-                        {/* Desktop Actions */}
                         <div className="hidden md:flex items-center space-x-4">
                             <Link
                                 to="/login"
-                                className="text-sm font-semibold text-slate-700 hover:text-blue-700 transition-colors"
+                                className="text-sm font-semibold text-white/80 hover:text-white transition-colors"
                             >
                                 Sign In
                             </Link>
                             <a
                                 href="mailto:founder@servicetagger.com?subject=Early Access Request"
-                                className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors"
+                                className="bg-white hover:bg-slate-100 text-slate-900 px-5 py-2 rounded-lg text-sm font-semibold transition-colors"
                             >
                                 Email Founder
                             </a>
                         </div>
 
-                        {/* Mobile Menu Button */}
                         <div className="md:hidden flex items-center">
                             <button
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                className="text-slate-900 focus:outline-none"
+                                className="text-white focus:outline-none"
                             >
                                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                             </button>
@@ -57,86 +53,66 @@ const LandingPage = () => {
                     </div>
                 </div>
 
-                {/* Mobile Menu */}
                 {mobileMenuOpen && (
-                    <div className="md:hidden bg-white border-b border-slate-200 px-4 py-4 space-y-3">
-                        <a href="#features" className="block text-slate-600 font-medium" onClick={() => setMobileMenuOpen(false)}>Features</a>
-                        <a href="#how-it-works" className="block text-slate-600 font-medium" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
-                        <Link to="/login" className="block text-slate-600 font-medium">Sign In</Link>
-                        <a href="mailto:founder@servicetagger.com?subject=Early Access Request" className="block bg-slate-900 text-white text-center py-2.5 rounded-lg font-semibold" onClick={() => setMobileMenuOpen(false)}>Email Founder for Access</a>
+                    <div className="md:hidden bg-black/90 backdrop-blur-sm px-4 py-4 space-y-3">
+                        <a href="#features" className="block text-white/80 font-medium" onClick={() => setMobileMenuOpen(false)}>Features</a>
+                        <a href="#how-it-works" className="block text-white/80 font-medium" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
+                        <Link to="/login" className="block text-white/80 font-medium">Sign In</Link>
+                        <a href="mailto:founder@servicetagger.com?subject=Early Access Request" className="block bg-white text-slate-900 text-center py-2.5 rounded-lg font-semibold" onClick={() => setMobileMenuOpen(false)}>Email Founder for Access</a>
                     </div>
                 )}
             </nav>
 
-            {/* Hero Section */}
-            <header className="pt-28 pb-16 sm:pt-32 sm:pb-20 bg-white">
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-12 items-center">
-                        {/* Hero Text */}
-                        <div className="text-center lg:text-left">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-orange-50 border border-orange-200 text-xs font-semibold text-orange-700 mb-6 uppercase tracking-wide">
-                                Private alpha · HVAC teams only
-                            </div>
+            {/* Hero — full-viewport background image */}
+            <header className="relative min-h-screen flex items-center justify-center">
+                {/* Background image */}
+                <div
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                    style={{ backgroundImage: `url('/hero-bg.jpg')` }}
+                />
+                {/* Dark overlay for text readability */}
+                <div className="absolute inset-0 bg-black/60" />
 
-                            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 mb-6 leading-[1.1]">
-                                Your technicians forget equipment details. ServiceTagger <span className="text-blue-700">doesn't.</span>
-                            </h1>
+                <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center pt-16">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/10 border border-white/20 text-xs font-semibold text-orange-400 mb-6 uppercase tracking-wide">
+                        Private alpha · HVAC teams only
+                    </div>
 
-                            <p className="text-lg text-slate-600 mb-4 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                                Track every job, every unit, every customer. One app your whole crew actually uses.
-                            </p>
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white mb-6 leading-[1.1]">
+                        Your technicians forget equipment details. ServiceTagger <span className="text-blue-400">doesn't.</span>
+                    </h1>
 
-                            <p className="text-base text-slate-500 mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                                We're building this with a small group of HVAC contractors. You'll get bugs, direct founder access, and software shaped around your real jobs.
-                            </p>
+                    <p className="text-lg sm:text-xl text-white/80 mb-4 leading-relaxed max-w-2xl mx-auto">
+                        Track every job, every unit, every customer. One app your whole crew actually uses.
+                    </p>
 
-                            <div className="flex flex-col sm:flex-row items-center gap-3 justify-center lg:justify-start">
-                                <Link
-                                    to="/register"
-                                    className="w-full sm:w-auto px-8 py-3.5 bg-blue-700 hover:bg-blue-800 text-white rounded-lg font-semibold text-base transition-colors"
-                                >
-                                    Apply for early access
-                                </Link>
-                                <a
-                                    href="mailto:founder@servicetagger.com"
-                                    className="w-full sm:w-auto px-8 py-3.5 text-slate-600 hover:text-slate-900 font-semibold text-base transition-colors flex items-center justify-center gap-1 underline decoration-slate-300 hover:decoration-slate-600 underline-offset-4"
-                                >
-                                    Talk directly with the founder
-                                </a>
-                            </div>
+                    <p className="text-base text-white/60 mb-8 leading-relaxed max-w-2xl mx-auto">
+                        We're building this with a small group of HVAC contractors. You'll get bugs, direct founder access, and software shaped around your real jobs.
+                    </p>
 
-                            <div className="mt-8 flex items-center justify-center lg:justify-start gap-6 text-sm font-medium text-slate-500">
-                                <div className="flex items-center gap-1.5">
-                                    <ShieldCheck className="w-4 h-4 text-blue-700" />
-                                    <span>Used by real HVAC crews</span>
-                                </div>
-                                <div className="flex items-center gap-1.5">
-                                    <Clock className="w-4 h-4 text-blue-700" />
-                                    <span>Set up in one lunch break</span>
-                                </div>
-                            </div>
+                    <div className="flex flex-col sm:flex-row items-center gap-3 justify-center">
+                        <Link
+                            to="/register"
+                            className="w-full sm:w-auto px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-base transition-colors"
+                        >
+                            Apply for early access
+                        </Link>
+                        <a
+                            href="mailto:founder@servicetagger.com"
+                            className="w-full sm:w-auto px-8 py-3.5 text-white/70 hover:text-white font-semibold text-base transition-colors flex items-center justify-center gap-1 underline decoration-white/30 hover:decoration-white/70 underline-offset-4"
+                        >
+                            Talk directly with the founder
+                        </a>
+                    </div>
+
+                    <div className="mt-8 flex items-center justify-center gap-6 text-sm font-medium text-white/50">
+                        <div className="flex items-center gap-1.5">
+                            <ShieldCheck className="w-4 h-4 text-blue-400" />
+                            <span>Used by real HVAC crews</span>
                         </div>
-
-                        {/* Hero Image */}
-                        <div className="relative">
-                            <div className="rounded-xl overflow-hidden shadow-lg border border-slate-200">
-                                <img
-                                    src="/hvac-hero.jpg"
-                                    alt="HVAC Technician using ServiceTagger"
-                                    className="w-full h-auto object-cover"
-                                />
-                                <div className="absolute bottom-6 left-6 right-6 bg-white p-4 rounded-lg border border-slate-200 shadow-md hidden sm:block">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                                            <CheckCircle2 className="w-5 h-5 text-green-600" />
-                                        </div>
-                                        <div>
-                                            <div className="font-semibold text-slate-900">Job Completed</div>
-                                            <div className="text-slate-500 text-sm">Tech notified · Customer billed</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div className="flex items-center gap-1.5">
+                            <Clock className="w-4 h-4 text-blue-400" />
+                            <span>Set up in one lunch break</span>
                         </div>
                     </div>
                 </div>
