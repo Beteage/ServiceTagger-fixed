@@ -121,7 +121,7 @@ const LandingPage = () => {
                         <div className="relative">
                             <div className="rounded-xl overflow-hidden shadow-lg border border-slate-200">
                                 <img
-                                    src="/hero-stock.jpg"
+                                    src="/hvac-hero.jpg"
                                     alt="HVAC Technician using ServiceTagger"
                                     className="w-full h-auto object-cover"
                                 />
