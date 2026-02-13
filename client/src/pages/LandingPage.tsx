@@ -11,32 +11,32 @@ const LandingPage = () => {
 
     return (
         <div className="min-h-screen bg-white text-slate-900 font-sans">
-            {/* Navigation — transparent over hero */}
-            <nav className="fixed w-full z-50 bg-black/30 backdrop-blur-sm border-b border-white/10">
+            {/* Navigation — white for industry authenticity */}
+            <nav className="fixed w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-200">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <Link to="/" className="flex-shrink-0 flex items-center gap-2">
-                            <img src={logo} alt="ServiceTagger" className="h-7 w-auto brightness-200" />
-                            <span className="font-bold text-xl tracking-tight text-white">
-                                Service<span className="text-blue-400">Tagger</span>
+                            <img src={logo} alt="ServiceTagger" className="h-7 w-auto" />
+                            <span className="font-bold text-xl tracking-tight text-slate-900">
+                                Service<span className="text-blue-700">Tagger</span>
                             </span>
                         </Link>
 
-                        <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-white/80">
-                            <a href="#features" className="hover:text-white transition-colors">Features</a>
-                            <a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a>
+                        <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
+                            <a href="#features" className="hover:text-blue-700 transition-colors">Features</a>
+                            <a href="#how-it-works" className="hover:text-blue-700 transition-colors">How It Works</a>
                         </div>
 
                         <div className="hidden md:flex items-center space-x-4">
                             <Link
                                 to="/login"
-                                className="text-sm font-semibold text-white/80 hover:text-white transition-colors"
+                                className="text-sm font-semibold text-slate-600 hover:text-blue-700 transition-colors"
                             >
                                 Sign In
                             </Link>
                             <a
                                 href="mailto:founder@servicetagger.com?subject=Early Access Request"
-                                className="bg-white hover:bg-slate-100 text-slate-900 px-5 py-2 rounded-lg text-sm font-semibold transition-colors"
+                                className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors"
                             >
                                 Email Founder
                             </a>
@@ -45,7 +45,7 @@ const LandingPage = () => {
                         <div className="md:hidden flex items-center">
                             <button
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                className="text-white focus:outline-none"
+                                className="text-slate-900 focus:outline-none"
                             >
                                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                             </button>
@@ -54,11 +54,11 @@ const LandingPage = () => {
                 </div>
 
                 {mobileMenuOpen && (
-                    <div className="md:hidden bg-black/90 backdrop-blur-sm px-4 py-4 space-y-3">
-                        <a href="#features" className="block text-white/80 font-medium" onClick={() => setMobileMenuOpen(false)}>Features</a>
-                        <a href="#how-it-works" className="block text-white/80 font-medium" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
-                        <Link to="/login" className="block text-white/80 font-medium">Sign In</Link>
-                        <a href="mailto:founder@servicetagger.com?subject=Early Access Request" className="block bg-white text-slate-900 text-center py-2.5 rounded-lg font-semibold" onClick={() => setMobileMenuOpen(false)}>Email Founder for Access</a>
+                    <div className="md:hidden bg-white border-b border-slate-200 px-4 py-4 space-y-3">
+                        <a href="#features" className="block text-slate-600 font-medium" onClick={() => setMobileMenuOpen(false)}>Features</a>
+                        <a href="#how-it-works" className="block text-slate-600 font-medium" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
+                        <Link to="/login" className="block text-slate-600 font-medium">Sign In</Link>
+                        <a href="mailto:founder@servicetagger.com?subject=Early Access Request" className="block bg-slate-900 text-white text-center py-2.5 rounded-lg font-semibold" onClick={() => setMobileMenuOpen(false)}>Email Founder for Access</a>
                     </div>
                 )}
             </nav>
