@@ -74,9 +74,6 @@ const LandingPage = () => {
                 <div className="absolute inset-0 bg-black/60" />
 
                 <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center pt-16">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/10 border border-white/20 text-xs font-semibold text-orange-400 mb-6 uppercase tracking-wide">
-                        Private alpha · HVAC teams only
-                    </div>
 
                     <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white mb-6 leading-[1.1]">
                         Your technicians forget equipment details. ServiceTagger <span className="text-blue-400">doesn't.</span>
