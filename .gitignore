@@ -7,3 +7,5 @@ build
 
 *.db
 
+.vercel
+.env*.local
